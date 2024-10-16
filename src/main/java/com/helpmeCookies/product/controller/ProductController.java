@@ -30,7 +30,7 @@ public class ProductController {
     }
 
     @PostMapping("/{productId}/images")
-    public ResponseEntity<ProductImageResponse> uploadImages(@PathVariable("productId") Long productId, List<MultipartFile> files) throws IOException {
+    public ResponseEntity<ProductImageResponse> uploadImages(@PathVariable("productId") Long productId, List<MultipartFile> files) {
         List<FileUploadResponse> responses = productImageService.uploadMultiFiles(productId,files);
         return ResponseEntity.ok(new ProductImageResponse(responses.stream().map(FileUploadResponse::photoUrl).toList()));
     }
@@ -38,7 +38,8 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductInfo(@PathVariable("productId") Long productId) {
         Product product = productService.find(productId);
-        return ResponseEntity.ok(ProductResponse.from(product));
+        List<String> urls = productImageService.getImages(productId);
+        return ResponseEntity.ok(ProductResponse.from(product,urls));
     }
 
     @PutMapping("/{productId}")

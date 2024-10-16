@@ -2,6 +2,7 @@ package com.helpmeCookies.product.service;
 
 import com.helpmeCookies.global.utils.AwsS3FileUtils;
 import com.helpmeCookies.product.dto.FileUploadResponse;
+import com.helpmeCookies.product.entity.ProductImage;
 import com.helpmeCookies.product.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class ProductImageService {
     private final ProductImageRepository productImageRepository;
 
     @Transactional
-    public List<FileUploadResponse> uploadMultiFiles(Long productId, List<MultipartFile> files) throws IOException {
+    public List<FileUploadResponse> uploadMultiFiles(Long productId, List<MultipartFile> files) {
         List<FileUploadResponse> uploadResponses = awsS3FileUtils.uploadMultiImages(files);
         uploadResponses.forEach(response ->
             productImageRepository.save(response.toEntity(productId)));
@@ -31,5 +32,9 @@ public class ProductImageService {
         //추후에 개선 예정
         productImageRepository.deleteAllByProductId(productId);
         uploadMultiFiles(productId, files);
+    }
+
+    public List<String> getImages(Long productId) {
+        return productImageRepository.findAllByProductId(productId).stream().map(ProductImage::getPhotoUrl).toList();
     }
 }
