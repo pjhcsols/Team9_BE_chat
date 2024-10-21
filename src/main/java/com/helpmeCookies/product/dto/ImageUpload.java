@@ -2,7 +2,7 @@ package com.helpmeCookies.product.dto;
 
 import com.helpmeCookies.product.entity.ProductImage;
 
-public record FileUploadResponse(
+public record ImageUpload(
         String photoUrl,
         String uuid
 ) {
