@@ -16,7 +16,7 @@ public record ProductRequest(
         String preferredLocation,
         List<HashTag> hashTags,
         Long artistInfoId,
-        List<ImageUpload> productImages
+        List<String> imageUrls
 
 ) {
     public Product toEntity(ArtistInfo artistInfo) {

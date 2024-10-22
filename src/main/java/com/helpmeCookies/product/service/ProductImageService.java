@@ -28,7 +28,9 @@ public class ProductImageService {
     }
 
     @Transactional
-    public void saveImages(Long productId,List<ImageUpload> files) {
+    public void saveImages(Long productId,List<String> urls) {
+        //DTO 변환
+        List<ImageUpload> files = urls.stream().map(ImageUpload::new).toList();
         files.forEach(image -> productImageRepository.save(image.toEntity(productId)));
     }
 
