@@ -14,12 +14,13 @@ public record ProductResponse(
         String description,
         String preferredLocation,
         List<HashTag> hashTags,
-        ArtistInfo artistInfo
+        ArtistInfo artistInfo,
+        List<String> imageUrls
 ) {
     public record ArtistInfo(Long artistId, String artistName) {
     }
 
-    public static ProductResponse from(Product product) {
+    public static ProductResponse from(Product product, List<String> urls) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),
@@ -29,7 +30,8 @@ public record ProductResponse(
                 product.getDescription(),
                 product.getPreferredLocation(),
                 product.getHashTags(),
-                new ArtistInfo(product.getArtistInfo().getId(),product.getArtistInfo().getNickname())
+                new ArtistInfo(product.getArtistInfo().getId(),product.getArtistInfo().getNickname()),
+                urls
         );
     }
 }
