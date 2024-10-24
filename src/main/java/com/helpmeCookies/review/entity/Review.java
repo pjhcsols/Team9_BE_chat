@@ -39,4 +39,8 @@ public class Review {
 	}
 
 	public Review() {}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
 }
