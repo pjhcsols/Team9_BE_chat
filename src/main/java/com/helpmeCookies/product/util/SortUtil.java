@@ -6,7 +6,7 @@ public class SortUtil {
 
     public static Sort convertProductSort(ProductSort productSort) {
         return switch (productSort) {
-            case LATEST -> Sort.by(Sort.Order.desc("createdDate"));
+            case LATEST -> Sort.by(Sort.Order.desc("created_date"));
             default -> Sort.unsorted();
         };
     }
