@@ -12,12 +12,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p.id AS id, p.name AS name, a.name AS artist, p.price AS price " +
+    @Query("SELECT p.id AS id, p.name AS name, a.nickname AS artist, p.price AS price " +
         "FROM Product p JOIN p.artistInfo a " +
         "WHERE p.name LIKE %:query%") // Index 미사용
     Page<ProductSearch> findByName(@Param("query") String query, Pageable pageable);
 
-    @Query(value = "SELECT p.id, p.name, a.name AS artist, p.price " +
+    @Query(value = "SELECT p.id, p.name, a.nickname AS artist, p.price " +
         "FROM product p JOIN artist_info a ON p.artist_info_id = a.id " +
         "WHERE MATCH(p.name) AGAINST (:query IN BOOLEAN MODE)",
         countQuery = "SELECT COUNT(*) " +
