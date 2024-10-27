@@ -1,9 +1,10 @@
 package com.helpmeCookies.product.controller;
 
-import com.helpmeCookies.product.dto.FileUploadResponse;
-import com.helpmeCookies.product.dto.ProductImageResponse;
 import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
 
+import com.helpmeCookies.product.controller.docs.ProductApiDocs;
+import com.helpmeCookies.product.dto.FileUploadResponse;
+import com.helpmeCookies.product.dto.ProductImageResponse;
 import com.helpmeCookies.product.dto.ProductPage;
 import com.helpmeCookies.product.dto.ProductRequest;
 import com.helpmeCookies.product.dto.ProductResponse;
@@ -12,7 +13,6 @@ import com.helpmeCookies.product.service.ProductImageService;
 import com.helpmeCookies.product.service.ProductService;
 import com.helpmeCookies.product.util.ProductSort;
 import lombok.RequiredArgsConstructor;
-import com.helpmeCookies.product.dto.ProductPage;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductController implements ProductApiDocs {
 
     private final ProductService productService;
     private final ProductImageService productImageService;
