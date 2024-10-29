@@ -56,12 +56,13 @@ public class SearchControllerTest {
         given(productSearch.getName()).willReturn("product1");
         given(productSearch.getArtist()).willReturn("artist");
         given(productSearch.getPrice()).willReturn(10000L);
+        given(productSearch.getThumbnailUrl()).willReturn("thumbnailUrl");
         var paging = ProductPage.Paging.from(new PageImpl<>(List.of(productSearch)));
         given(productService.getProductsByPage(eq(query), any(Pageable.class)))
             .willReturn(paging);
 
         // when & then
-        mvc.perform(get("/test/v1/products")
+        mvc.perform(get("/v1/products")
                 .param("query", query)
                 .param("size", String.valueOf(size))
                 .param("page", String.valueOf(page))
@@ -70,7 +71,8 @@ public class SearchControllerTest {
             .andExpect(jsonPath("$.hasNext").value(false))
             .andExpect(jsonPath("$.products[0].name").value("product1"))
             .andExpect(jsonPath("$.products[0].artist").value("artist"))
-            .andExpect(jsonPath("$.products[0].price").value(10000L));
+            .andExpect(jsonPath("$.products[0].price").value(10000L))
+            .andExpect(jsonPath("$.products[0].thumbnailUrl").value("thumbnailUrl"));
     }
 
 }

@@ -43,6 +43,7 @@ public class SearchRepositoryTest {
             .contains("SELECT")
             .contains("p.id,")
             .contains("p.name,")
+            .contains("p.thumbnail_url,")
             .contains("a.nickname AS artist,")
             .contains("p.price")
             .contains("FROM product p")

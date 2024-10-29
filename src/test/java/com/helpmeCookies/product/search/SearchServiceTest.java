@@ -42,6 +42,7 @@ public class SearchServiceTest {
         given(productSearch.getName()).willReturn("product1");
         given(productSearch.getArtist()).willReturn("artist");
         given(productSearch.getPrice()).willReturn(10000L);
+        given(productSearch.getThumbnailUrl()).willReturn("thumbnailUrl");
 
         var productPage = new PageImpl<>(List.of(productSearch));
         given(productRepository.findByNameWithIdx("roduct", pageRequest))
@@ -56,7 +57,8 @@ public class SearchServiceTest {
             () -> assertThat(result.products().size()).isEqualTo(1L),
             () -> assertThat(result.products().get(0).name()).isEqualTo("product1"),
             () -> assertThat(result.products().get(0).artist()).isEqualTo("artist"),
-            () -> assertThat(result.products().get(0).price()).isEqualTo(10000L)
+            () -> assertThat(result.products().get(0).price()).isEqualTo(10000L),
+            () -> assertThat(result.products().get(0).thumbnailUrl()).isEqualTo("thumbnailUrl")
         );
     }
 
