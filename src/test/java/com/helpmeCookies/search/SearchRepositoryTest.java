@@ -1,4 +1,4 @@
-package com.helpmeCookies.product.search;
+package com.helpmeCookies.search;
 
 import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.helpmeCookies.global.config.QueryDSLConfig;
 import com.helpmeCookies.product.repository.ProductRepository;
 import com.helpmeCookies.product.util.ProductSort;
+import com.helpmeCookies.user.repository.ArtistInfoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ public class SearchRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ArtistInfoRepository artistInfoRepository;
 
 
     @Test
@@ -52,4 +56,29 @@ public class SearchRepositoryTest {
             .contains("order by p.created_date desc");
         //.contains("limit ?") 테스트 dbh2 db에서는 limit이 없어서 제외
    }
+
+    @Test
+    @DisplayName("작가 검색 쿼리 확인")
+    void 작가_검색(CapturedOutput out) {
+        // given
+        var pageRequest = PageRequest.of(0, 10);
+
+        // when
+        try{
+            artistInfoRepository.findByNicknameWithIdx("nickname", pageRequest);
+        } catch (Exception ignored) {
+        }
+
+        // then
+        assertThat(out.getOut())
+            .contains("SELECT")
+            .contains("a.id,")
+            .contains("a.nickname,")
+            .contains("a.artist_image_url,")
+            .contains("a.total_followers,")
+            .contains("a.total_likes")
+            .contains("FROM artist_info a")
+            .contains("WHERE MATCH(a.nickname) AGAINST (? IN BOOLEAN MODE)");
+    }
+
 }
