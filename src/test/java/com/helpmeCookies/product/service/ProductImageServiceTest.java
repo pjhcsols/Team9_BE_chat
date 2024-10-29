@@ -41,7 +41,7 @@ class ProductImageServiceTest {
 
     @BeforeEach
     void setUp() {
-        productImageService = new ProductImageService(awsS3FileUtils, productImageRepository);
+        productImageService = new ProductImageService(awsS3FileUtils, productImageRepository, productRepository);
     }
 
     @AfterEach
