@@ -10,14 +10,16 @@ public class ProductPage {
             Long id,
             String name,
             String artist,
-            Long price
+            Long price,
+            String thumbnailUrl
     ) {
         public static Info from(ProductSearch productSearch) {
             return new Info(
                     productSearch.getId(),
                     productSearch.getName(),
                     productSearch.getArtist(),
-                    productSearch.getPrice()
+                    productSearch.getPrice(),
+                    productSearch.getThumbnailUrl()
             );
         }
 
