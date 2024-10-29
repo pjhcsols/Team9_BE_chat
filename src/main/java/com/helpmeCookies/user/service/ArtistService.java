@@ -1,10 +1,8 @@
 package com.helpmeCookies.user.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.helpmeCookies.global.exception.user.ResourceNotFoundException;
 import com.helpmeCookies.user.dto.ArtistInfoDto;
+import com.helpmeCookies.user.dto.ArtistInfoPage;
 import com.helpmeCookies.user.dto.BusinessArtistDto;
 import com.helpmeCookies.user.dto.StudentArtistDto;
 import com.helpmeCookies.user.dto.request.BusinessArtistReq;
@@ -20,8 +18,10 @@ import com.helpmeCookies.user.repository.BusinessArtistRepository;
 import com.helpmeCookies.user.repository.StudentArtistRepository;
 import com.helpmeCookies.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -114,5 +114,11 @@ public class ArtistService {
 			default:
 				throw new ResourceNotFoundException("존재하지 않는 아티스트입니다.");
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public ArtistInfoPage.Paging getArtistsByPage(String query, Pageable pageable) {
+		var artistInfoPage = artistInfoRepository.findByNicknameWithIdx(query, pageable);
+		return ArtistInfoPage.Paging.from(artistInfoPage);
 	}
 }
