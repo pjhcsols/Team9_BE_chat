@@ -33,8 +33,8 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 			.select(Projections.constructor(
 				UserFollowingDto.class,
 				user.id,
-				user.userInfo.userImageUrl,
-				user.userInfo.nickname,
+				user.userImageUrl,
+				user.nickname,
 				artistInfo.totalFollowers,
 				artistInfo.totalLikes
 			))

@@ -3,6 +3,7 @@ package com.helpmeCookies.product.service;
 import com.helpmeCookies.global.utils.AwsS3FileUtils;
 import com.helpmeCookies.product.dto.FileUploadResponse;
 import com.helpmeCookies.product.repository.ProductImageRepository;
+import com.helpmeCookies.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +17,17 @@ import java.util.List;
 public class ProductImageService {
     private final AwsS3FileUtils awsS3FileUtils;
     private final ProductImageRepository productImageRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public List<FileUploadResponse> uploadMultiFiles(Long productId, List<MultipartFile> files) throws IOException {
         List<FileUploadResponse> uploadResponses = awsS3FileUtils.uploadMultiImages(files);
         uploadResponses.forEach(response ->
             productImageRepository.save(response.toEntity(productId)));
+
+        var product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 id입니다"));
+        product.updateThumbnail(uploadResponses.getFirst().photoUrl());
+
         return uploadResponses;
     }
 

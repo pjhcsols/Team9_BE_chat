@@ -5,7 +5,9 @@ import com.helpmeCookies.product.entity.Category;
 import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.product.repository.ProductImageRepository;
 import com.helpmeCookies.product.repository.ProductRepository;
+import com.helpmeCookies.product.dto.ProductPage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+
+    @Transactional(readOnly = true)
+    public ProductPage.Paging getProductsByPage(String query, Pageable pageable) {
+        var productPage = productRepository.findByNameWithIdx(query, pageable);
+        return ProductPage.Paging.from(productPage);
+    }
 
     public Product save(ProductRequest productSaveRequest) {
         //TODO ArtistInfo 코드 병합시 수정 예정

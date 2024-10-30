@@ -1,5 +1,7 @@
 package com.helpmeCookies.product.entity;
 
+import com.helpmeCookies.global.entity.BaseTimeEntity;
+import jakarta.persistence.JoinColumn;
 import java.util.List;
 
 import com.helpmeCookies.user.entity.ArtistInfo;
@@ -17,7 +19,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 
 @Entity
-public class Product {
+public class Product extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,12 +44,15 @@ public class Product {
 	@Column(nullable = false)
 	private String preferredLocation;
 
+	private String thumbnailUrl;
+
 	@ElementCollection(targetClass = HashTag.class)
 	@CollectionTable(name = "product_hashtags")
 	@Enumerated(EnumType.STRING)
 	private List<HashTag> hashTags;
 
 	@ManyToOne
+	@JoinColumn(name = "artist_info_id")
 	private ArtistInfo artistInfo;
 
 	public Product() {}
@@ -109,5 +114,9 @@ public class Product {
 		this.preferredLocation = preferredLocation;
 		this.hashTags = hashTags;
 		this.artistInfo = artistInfo;
+	}
+
+	public void updateThumbnail(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
 	}
 }
