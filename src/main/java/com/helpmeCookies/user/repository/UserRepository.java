@@ -11,4 +11,5 @@ import com.helpmeCookies.user.repository.querydsl.UserCustomRepository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, UserCustomRepository {
 	Optional<User> findById(Long id);
+	Optional<User> findByUserInfoEmail(String email);
 }
