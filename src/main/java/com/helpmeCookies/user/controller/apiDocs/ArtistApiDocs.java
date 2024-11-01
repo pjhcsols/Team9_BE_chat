@@ -1,19 +1,19 @@
 package com.helpmeCookies.user.controller.apiDocs;
 
+import com.helpmeCookies.global.jwt.JwtUser;
+import com.helpmeCookies.user.dto.ArtistInfoPage.Paging;
+import com.helpmeCookies.user.dto.request.BusinessArtistReq;
+import com.helpmeCookies.user.dto.request.StudentArtistReq;
+import com.helpmeCookies.user.dto.response.ArtistDetailsRes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.helpmeCookies.global.jwt.JwtUser;
-import com.helpmeCookies.user.dto.request.BusinessArtistReq;
-import com.helpmeCookies.user.dto.request.StudentArtistReq;
-import com.helpmeCookies.user.dto.response.ArtistDetailsRes;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "작가 관련 기능", description = "작가 관련 API")
 public interface ArtistApiDocs {
@@ -43,5 +43,12 @@ public interface ArtistApiDocs {
 	@GetMapping("/v1/artist")
 	ArtistDetailsRes getArtist(
 		@AuthenticationPrincipal JwtUser jwtUser
+	);
+
+	@Operation(summary = "작가 검색")
+	ResponseEntity<Paging> getArtistsByPage(
+		String query,
+		@Parameter(description = "default value 20") int size,
+		int page
 	);
 }

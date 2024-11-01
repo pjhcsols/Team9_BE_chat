@@ -5,6 +5,7 @@ import com.helpmeCookies.product.dto.ImageUpload;
 import com.helpmeCookies.product.entity.ProductImage;
 import com.helpmeCookies.product.repository.ProductImageRepository;
 import java.util.ArrayList;
+import com.helpmeCookies.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ProductImageService {
     private final AwsS3FileUtils awsS3FileUtils;
     private final ProductImageRepository productImageRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public List<ImageUpload> uploadMultiFiles(List<MultipartFile> files) {

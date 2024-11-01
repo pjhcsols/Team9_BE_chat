@@ -45,7 +45,8 @@ public class ArtistE2Etest {
 		StudentArtistReq request = new StudentArtistReq(
 			"student@example.com",
 			"Example University",
-			"Computer Science"
+			"Computer Science",
+			""
 		);
 
 		String requestJson = objectMapper.writeValueAsString(request);

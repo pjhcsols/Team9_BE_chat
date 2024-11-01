@@ -7,7 +7,9 @@ import com.helpmeCookies.product.repository.ProductImageRepository;
 import com.helpmeCookies.product.repository.ProductRepository;
 import com.helpmeCookies.user.entity.ArtistInfo;
 import com.helpmeCookies.user.repository.ArtistInfoRepository;
+import com.helpmeCookies.product.dto.ProductPage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,12 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ArtistInfoRepository artistInfoRepository;
+
+    @Transactional(readOnly = true)
+    public ProductPage.Paging getProductsByPage(String query, Pageable pageable) {
+        var productPage = productRepository.findByNameWithIdx(query, pageable);
+        return ProductPage.Paging.from(productPage);
+    }
 
     public Product save(ProductRequest productSaveRequest) {
         ArtistInfo artistInfo = artistInfoRepository.findById(productSaveRequest.artistInfoId())

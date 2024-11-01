@@ -1,13 +1,19 @@
 package com.helpmeCookies.product.controller;
 
 import com.helpmeCookies.product.dto.ImageUpload;
+import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
+
+import com.helpmeCookies.product.controller.docs.ProductApiDocs;
 import com.helpmeCookies.product.dto.ProductImageResponse;
+import com.helpmeCookies.product.dto.ProductPage;
 import com.helpmeCookies.product.dto.ProductRequest;
 import com.helpmeCookies.product.dto.ProductResponse;
 import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.product.service.ProductImageService;
 import com.helpmeCookies.product.service.ProductService;
+import com.helpmeCookies.product.util.ProductSort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductController implements ProductApiDocs {
 
     private final ProductService productService;
     private final ProductImageService productImageService;
@@ -62,5 +68,18 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable("productId") Long productId) {
         productService.delete(productId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<ProductPage.Paging> getProductsByPage(
+        @RequestParam("query") String query,
+        @RequestParam(name = "size", required = false, defaultValue = "20") int size,
+        @RequestParam("page") int page,
+        @RequestParam("sort") ProductSort productSort
+    ) {
+        var sort = convertProductSort(productSort);
+        var pageable = PageRequest.of(page, size, sort);
+
+        return ResponseEntity.ok(productService.getProductsByPage(query, pageable));
     }
 }
