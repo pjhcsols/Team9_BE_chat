@@ -1,9 +1,12 @@
 package com.helpmeCookies.review.controller;
 
 import com.helpmeCookies.review.dto.ReviewRequest;
+import com.helpmeCookies.review.dto.ReviewResponse;
+import com.helpmeCookies.review.entity.Review;
 import com.helpmeCookies.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,5 +35,11 @@ public class ReviewController {
     public ResponseEntity<Void> editReview(@RequestBody ReviewRequest request, @PathVariable Long productId, @PathVariable Long reviewId) {
         reviewService.editReview(request, productId, reviewId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponse> getReview(@PathVariable Long reviewId) {
+        Review response = reviewService.getReview(reviewId);
+        return ResponseEntity.ok(ReviewResponse.fromEntity(response));
     }
 }

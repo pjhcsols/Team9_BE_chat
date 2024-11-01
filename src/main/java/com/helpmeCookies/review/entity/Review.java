@@ -43,4 +43,20 @@ public class Review {
 	public void updateContent(String content) {
 		this.content = content;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public User getWriter() {
+		return writer;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
 }

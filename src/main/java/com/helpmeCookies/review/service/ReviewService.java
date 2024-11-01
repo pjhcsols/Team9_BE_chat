@@ -28,4 +28,8 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 reviewId 입니다."));
         review.updateContent(request.content());
     }
+
+    public Review getReview(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 reviewId 입니다."));
+    }
  }
