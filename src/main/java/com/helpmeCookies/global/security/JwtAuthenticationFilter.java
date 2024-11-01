@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		// TODO: UserDetailsService를 통해 사용자 정보를 가져와 인증을 진행한다.
 		if (jwtProvider.validateToken(rawToken, true)) {
 			JwtUser jwtUser = jwtProvider.getJwtUser(rawToken);
 			Authentication authentication = new UsernamePasswordAuthenticationToken(jwtUser, null,
