@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "작가 관련 기능", description = "작가 관련 API")
+@Tag(name = "작가 관련 기능", description = "작가 관련 API, 작가 프로필 조회 API를 제외한 모든 API는 인증 이후 사용할 수 있습니다.(Authorization: Bearer {token}이 필요합니다.)")
 public interface ArtistApiDocs {
 
 	@Operation(summary = "학생 작가 등록", description = "학생 작가 등록")
@@ -35,11 +35,10 @@ public interface ArtistApiDocs {
 	@Operation(summary = "작가 프로필 조회", description = "작가 프로필 조회")
 	@GetMapping("/v1/artists/{userId}")
 	ArtistDetailsRes getArtist(
-		@AuthenticationPrincipal JwtUser jwtUser,
 		@PathVariable Long userId
 	);
 
-	@Operation(summary = "작가 프로필 조회", description = "자신의 작가 프로필 조회")
+	@Operation(summary = "작가 자신의 프로필 조회", description = "작가 자신의 프로필 조회")
 	@GetMapping("/v1/artist")
 	ArtistDetailsRes getArtist(
 		@AuthenticationPrincipal JwtUser jwtUser
