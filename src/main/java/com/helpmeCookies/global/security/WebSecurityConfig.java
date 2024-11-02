@@ -49,7 +49,10 @@ public class WebSecurityConfig {
 				.userInfoEndpoint((userInfo) -> userInfo
 					.userService(new Oauth2CustomUserService())
 				)
-				.defaultSuccessUrl("/oauth2/login/kakao")
+				// 추후 로그인 방식이 다양해지면, Handler의 세부 내용을 변경.
+				.successHandler((request, response, authentication) -> {
+					response.sendRedirect("/oauth2/login/kakao");
+				})
 			);
 
 		return http.build();
