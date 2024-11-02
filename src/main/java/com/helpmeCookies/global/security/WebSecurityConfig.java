@@ -19,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-
-
 @Controller
 public class WebSecurityConfig {
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -30,8 +28,31 @@ public class WebSecurityConfig {
 	@Bean
 	public WebSecurityCustomizer configure() {
 		return (web) -> web.ignoring()
-			.requestMatchers("/static/**")
-			.requestMatchers("/test/**");
+			.requestMatchers("/swagger-ui")
+			.requestMatchers("/static/**");
+	}
+
+	@Bean
+	public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.securityMatcher("/oauth2/**")
+			.csrf(AbstractHttpConfigurer::disable)
+			.authorizeHttpRequests((authorize) -> authorize
+				.requestMatchers("/oauth2/authorization/**",
+					"/oauth2/code/kakao/**"
+				).permitAll()
+				.anyRequest().authenticated()
+			)
+			.oauth2Login((oauth2) -> oauth2
+				.redirectionEndpoint(redirection -> redirection
+					.baseUri("/oauth2/code/*"))
+				.userInfoEndpoint((userInfo) -> userInfo
+					.userService(new Oauth2CustomUserService())
+				)
+				.defaultSuccessUrl("/oauth2/login/kakao")
+			);
+
+		return http.build();
 	}
 
 	@Bean
@@ -43,7 +64,7 @@ public class WebSecurityConfig {
 		http.authorizeHttpRequests((authorize) ->
 			authorize
 				.requestMatchers(
-					"/login", "/signup", "/", "/user",
+					"/login", "/signup", "/ttt/*", "/user",
 					"/api/auth/**",
 					"/swagger-ui/**",
 					"/swagger-resources",
@@ -53,9 +74,7 @@ public class WebSecurityConfig {
 					"swagger-ui/**"
 				).permitAll()
 				.anyRequest().authenticated()
-		);
-
-		http.exceptionHandling((exception) -> exception
+		).exceptionHandling((exception) -> exception
 			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 			.accessDeniedHandler(jwtAccessDeniedHandler)
 		);

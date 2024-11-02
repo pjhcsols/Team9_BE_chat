@@ -9,6 +9,7 @@ import com.helpmeCookies.global.exception.user.ResourceNotFoundException;
 import com.helpmeCookies.user.dto.UserDto;
 import com.helpmeCookies.user.dto.UserInfoDto;
 import com.helpmeCookies.user.dto.UserTypeDto;
+import com.helpmeCookies.user.dto.request.UserReq;
 import com.helpmeCookies.user.dto.response.UserFollowingRes;
 import com.helpmeCookies.user.entity.ArtistInfo;
 import com.helpmeCookies.user.entity.Social;
@@ -30,21 +31,29 @@ public class UserService {
 
 
 	@Transactional
-	public UserInfoDto getUserInfo(Long userId) {
-		UserInfo userInfo = userRepository.findById(userId)
-			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."))
-			.getUserInfo();
+	public UserDto getUserInfo(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
 
-		return UserInfoDto.fromEntity(userInfo);
+		return UserDto.fromEntity(user);
 	}
 
 	@Transactional
-	public UserDto updateUserInfo(UserInfoDto userInfoDto, Long userId) {
+	public UserDto updateUser(UserReq userReq, Long userId) {
 
 		User existingUser = userRepository.findById(userId)
 			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
 
-		existingUser.updateUserInfo(userInfoDto.toEntity());
+		existingUser.updateUserCommonInfo(userReq.nickname(), userReq.userImageUrl());
+		UserInfo userInfo = UserInfo.builder().name(userReq.name())
+			.email(userReq.email())
+			.birthdate(userReq.birthdate())
+			.phone(userReq.phone())
+			.address(userReq.address())
+			.hashTags(userReq.hashTags())
+			.build();
+
+		existingUser.updateUserInfo(userInfo);
 
 		return UserDto.fromEntity(userRepository.save(existingUser));
 	}
