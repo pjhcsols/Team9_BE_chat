@@ -6,6 +6,8 @@ import java.util.Set;
 import com.helpmeCookies.product.entity.HashTag;
 import com.helpmeCookies.user.entity.UserInfo;
 
+import lombok.Builder;
+
 public record UserInfoDto(
 	String name,
 	String email,

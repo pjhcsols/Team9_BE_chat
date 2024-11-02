@@ -22,11 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "작가 관련 기능", description = "작가 관련 API")
 public class ArtistController implements ArtistApiDocs {
 	private final ArtistService artistService;
 
-	@Operation(summary = "학생 작가 등록", description = "학생 작가 등록")
 	@PostMapping("/v1/artists/students")
 	public ResponseEntity<String> registerStudents(
 		@RequestBody StudentArtistReq artistDetailsReq,
@@ -36,7 +34,6 @@ public class ArtistController implements ArtistApiDocs {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "사업자 작가 등록", description = "사업자 작가 등록")
 	@PostMapping("/v1/artists/bussinesses")
 	public ResponseEntity<String> registerbussinsess(
 		@RequestBody BusinessArtistReq businessArtistReq,
@@ -46,16 +43,13 @@ public class ArtistController implements ArtistApiDocs {
 		return ResponseEntity.ok().build();
 	}
 
-	@Operation(summary = "작가 프로필 조회", description = "작가 프로필 조회")
 	@GetMapping("/v1/artists/{userId}")
 	public ArtistDetailsRes getArtist(
-		@AuthenticationPrincipal JwtUser jwtUser,
 		@PathVariable Long userId
 	) {
 		return artistService.getArtistDetails(userId);
 	}
 
-	@Operation(summary = "작가 프로필 조회", description = "자신의 작가 프로필 조회")
 	@GetMapping("/v1/artist")
 	public ArtistDetailsRes getArtist(
 		@AuthenticationPrincipal JwtUser jwtUser

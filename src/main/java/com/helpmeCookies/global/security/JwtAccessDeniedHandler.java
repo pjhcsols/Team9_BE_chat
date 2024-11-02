@@ -26,7 +26,5 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 		AccessDeniedException accessDeniedException) {
 		log.error("Token : {}", request.getHeader("Authorization"));
-		// TODO: 에러코드 추가
-		response.setStatus(403);
 	}
 }
