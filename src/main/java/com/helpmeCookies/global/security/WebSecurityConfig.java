@@ -27,7 +27,9 @@ public class WebSecurityConfig {
 
 	@Bean
 	public WebSecurityCustomizer configure() {
-		return (web) -> web.ignoring();
+		return (web) -> web.ignoring()
+			.requestMatchers("/swagger-ui")
+			.requestMatchers("/static/**");
 	}
 
 	@Bean
