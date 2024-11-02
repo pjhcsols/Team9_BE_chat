@@ -15,7 +15,9 @@ public record ProductRequest(
         String description,
         String preferredLocation,
         List<HashTag> hashTags,
-        Long artistInfo
+        Long artistInfoId,
+        List<String> imageUrls
+
 ) {
     public Product toEntity(ArtistInfo artistInfo) {
         return Product.builder()
