@@ -5,6 +5,8 @@ import com.helpmeCookies.product.entity.Category;
 import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.product.repository.ProductImageRepository;
 import com.helpmeCookies.product.repository.ProductRepository;
+import com.helpmeCookies.user.entity.ArtistInfo;
+import com.helpmeCookies.user.repository.ArtistInfoRepository;
 import com.helpmeCookies.product.dto.ProductPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    private final ArtistInfoRepository artistInfoRepository;
 
     @Transactional(readOnly = true)
     public ProductPage.Paging getProductsByPage(String query, Pageable pageable) {
@@ -24,8 +27,9 @@ public class ProductService {
     }
 
     public Product save(ProductRequest productSaveRequest) {
-        //TODO ArtistInfo 코드 병합시 수정 예정
-        Product product = productSaveRequest.toEntity(null);
+        ArtistInfo artistInfo = artistInfoRepository.findById(productSaveRequest.artistInfoId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 작가 정보입니다."));
+        Product product = productSaveRequest.toEntity(artistInfo);
         productRepository.save(product);
         return product;
     }
@@ -37,7 +41,8 @@ public class ProductService {
     @Transactional
     public void edit(Long productId, ProductRequest productRequest) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 id입니다"));
-        //TODO ArtistInfo 코드 병합시 수정 예정
+        ArtistInfo artistInfo = artistInfoRepository.findById(productRequest.artistInfoId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 작가 정보입니다."));
         product.update(
                 productRequest.name(),
                 Category.fromString(productRequest.category()),
@@ -46,7 +51,7 @@ public class ProductService {
                 productRequest.description(),
                 productRequest.preferredLocation(),
                 productRequest.hashTags(),
-                null);
+                artistInfo);
     }
 
     public void delete(Long productId) {
