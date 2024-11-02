@@ -16,6 +16,7 @@ import com.helpmeCookies.global.jwt.JwtToken;
 import com.helpmeCookies.global.jwt.JwtUser;
 import com.helpmeCookies.global.security.UserDetailService;
 import com.helpmeCookies.product.entity.HashTag;
+import com.helpmeCookies.user.dto.KakaoOAuth2Response;
 import com.helpmeCookies.user.entity.User;
 import com.helpmeCookies.user.entity.UserInfo;
 import com.helpmeCookies.user.repository.UserRepository;
@@ -55,8 +56,7 @@ public class LoginController {
 
 	@GetMapping("/oauth2/login/kakao")
 	public JwtToken ttt(@AuthenticationPrincipal OAuth2User oAuth2User) {
-		Map<String, Object> attributes = oAuth2User.getAttributes();
-		String email = (String) attributes.get("email");
-		return jwtProvider.createToken(userDetailsService.loadUserByEmail(email));
+		KakaoOAuth2Response kakaoUser = KakaoOAuth2Response.from(oAuth2User.getAttributes());
+		return jwtProvider.createToken(userDetailsService.loadUserByEmail(kakaoUser.email(), kakaoUser.nickname()));
 	}
 }
