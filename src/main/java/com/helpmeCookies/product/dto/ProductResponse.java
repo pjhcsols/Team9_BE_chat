@@ -14,28 +14,13 @@ public record ProductResponse(
         String description,
         String preferredLocation,
         List<HashTag> hashTags,
-        ArtistInfo artistInfo
+        ArtistInfo artistInfo,
+        List<String> imageUrls
 ) {
-    public static class ArtistInfo {
-        private final Long artistId;
-        private final String name;
-
-        public ArtistInfo(Long artistId, String name) {
-            this.artistId = artistId;
-            this.name = name;
-        }
-
-        public Long getArtistId() {
-            return artistId;
-        }
-
-        public String getName() {
-            return name;
-        }
+    public record ArtistInfo(Long artistId, String artistName) {
     }
 
-    public static ProductResponse from(Product product) {
-        //TODO artistInfo 코드 개발 이후 수정 예정
+    public static ProductResponse from(Product product, List<String> urls) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),
@@ -45,9 +30,8 @@ public record ProductResponse(
                 product.getDescription(),
                 product.getPreferredLocation(),
                 product.getHashTags(),
-                new ArtistInfo(
-                        1L, "임시"
-                )
+                new ArtistInfo(product.getArtistInfo().getId(),product.getArtistInfo().getNickname()),
+                urls
         );
     }
 }
