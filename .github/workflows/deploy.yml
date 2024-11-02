@@ -66,8 +66,6 @@ jobs:
           key: ${{ secrets.AWS_EC2_PRIVATE_KEY }} # EC2 인스턴스 pem key
           port: ${{ secrets.REMOTE_SSH_PORT }} # 접속 포트(생략 시 22번 기본 사용)
           script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/katecam-backend:latest
             cd /home/ubuntu # EC2 인스턴스의 배포 스크립트 파일 경로로 이동
             chmod +x deploy.sh # 배포 스크립트 실행 권한 부여
             ./deploy.sh # 배포 스크립트 실행
