@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class UserDetailService {
 	private final UserRepository userRepository;
 
+
 	public JwtUser loadUserByEmail(String email,String nickname) throws UsernameNotFoundException {
 		// 만약 유저가 존재하지 않는다면 저장
 		User user = userRepository.findByUserInfoEmail(email)
