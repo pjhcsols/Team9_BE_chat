@@ -27,7 +27,7 @@ public interface UserApiDocs {
 	@GetMapping("/v1/users")
 	ResponseEntity<UserCommonInfoRes> getUsers(@AuthenticationPrincipal JwtUser jwtUser);
 
-	@Operation(summary = "유저 상세 정보 조회", description = "로그인한 유저의 상세 정보를 조회한다.")
+	@Operation(summary = "유저 상세 정보 조회", description = "로그인한 유저의 상세 정보를 조회한다. 유저의 모든 정보를 조회 할 수 있다.")
 	@GetMapping("/v1/users/details")
 	ResponseEntity<UserDetailsInfoRes> getUserDetails(@AuthenticationPrincipal JwtUser jwtUser);
 

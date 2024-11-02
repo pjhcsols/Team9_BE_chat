@@ -24,6 +24,5 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException authException) throws IOException, ServletException {
 		log.debug("Token : {}", request.getHeader("Authorization"));
-		response.setStatus(401);
 	}
 }

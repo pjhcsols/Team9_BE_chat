@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.helpmeCookies.global.jwt.JwtUser;
 import com.helpmeCookies.user.controller.apiDocs.UserApiDocs;
-import com.helpmeCookies.user.dto.UserFollowingDto;
 import com.helpmeCookies.user.dto.response.UserCommonInfoRes;
-import com.helpmeCookies.user.dto.request.UserInfoReq;
+import com.helpmeCookies.user.dto.request.UserReq;
 import com.helpmeCookies.user.dto.response.UserDetailsInfoRes;
 import com.helpmeCookies.user.dto.UserTypeDto;
 import com.helpmeCookies.user.dto.response.UserFollowingRes;
 import com.helpmeCookies.user.service.UserService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -57,12 +53,12 @@ public class UserController implements UserApiDocs {
 	}
 
 	@PutMapping("/v1/users")
-	public String updateUserInfo(
+	public String updateUser(
 		@AuthenticationPrincipal JwtUser jwtUser,
-		@RequestBody UserInfoReq userInfoReq
+		@RequestBody UserReq userReq
 	) {
 		// UserInfoDto를 통해서 유저 정보를 수정한다.
-		userService.updateUserInfo(userInfoReq.toDto(), jwtUser.getId());
+		userService.updateUser(userReq, jwtUser.getId());
 		return "ok";
 	}
 
