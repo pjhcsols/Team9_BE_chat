@@ -1,10 +1,8 @@
 package com.helpmeCookies.user.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.helpmeCookies.global.exception.user.ResourceNotFoundException;
 import com.helpmeCookies.user.dto.ArtistInfoDto;
+import com.helpmeCookies.user.dto.ArtistInfoPage;
 import com.helpmeCookies.user.dto.BusinessArtistDto;
 import com.helpmeCookies.user.dto.StudentArtistDto;
 import com.helpmeCookies.user.dto.request.BusinessArtistReq;
@@ -20,8 +18,10 @@ import com.helpmeCookies.user.repository.BusinessArtistRepository;
 import com.helpmeCookies.user.repository.StudentArtistRepository;
 import com.helpmeCookies.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -45,7 +45,8 @@ public class ArtistService {
 		ArtistInfo artistInfo = ArtistInfo.builder()
 			.userId(userId)
 			.artistType(ArtistType.STUDENT)
-			.nickname(user.getUserInfo().getNickname())
+			.artistImageUrl(user.getUserImageUrl())
+			.nickname(user.getNickname())
 			.totalFollowers(0L)
 			.totalLikes(0L)
 			.about(studentArtistReq.about())
@@ -74,8 +75,9 @@ public class ArtistService {
 		// BusinessArtist 생성
 		ArtistInfo artistInfo = ArtistInfo.builder()
 			.userId(userId)
+			.artistImageUrl(user.getUserImageUrl())
 			.artistType(ArtistType.BUSINESS)
-			.nickname(user.getUserInfo().getNickname())
+			.nickname(user.getNickname())
 			.totalFollowers(0L)
 			.totalLikes(0L)
 			.about(businessArtistReq.about())
@@ -112,5 +114,11 @@ public class ArtistService {
 			default:
 				throw new ResourceNotFoundException("존재하지 않는 아티스트입니다.");
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public ArtistInfoPage.Paging getArtistsByPage(String query, Pageable pageable) {
+		var artistInfoPage = artistInfoRepository.findByNicknameWithIdx(query, pageable);
+		return ArtistInfoPage.Paging.from(artistInfoPage);
 	}
 }

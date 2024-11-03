@@ -1,5 +1,6 @@
-package com.helpmeCookies.product.entity;
+package com.helpmeCookies.review.entity;
 
+import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 
 @Entity
 public class Review {
@@ -27,4 +29,34 @@ public class Review {
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
 	private Product product;
+
+	@Builder
+	public Review(Long id, String content, User writer, Product product) {
+		this.id = id;
+		this.content = content;
+		this.writer = writer;
+		this.product = product;
+	}
+
+	public Review() {}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public User getWriter() {
+		return writer;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
 }

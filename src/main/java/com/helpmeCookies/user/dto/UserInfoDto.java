@@ -6,10 +6,10 @@ import java.util.Set;
 import com.helpmeCookies.product.entity.HashTag;
 import com.helpmeCookies.user.entity.UserInfo;
 
+import lombok.Builder;
+
 public record UserInfoDto(
 	String name,
-	String userImageUrl,
-	String nickname,
 	String email,
 	String birthdate,
 	String phone,
@@ -19,8 +19,6 @@ public record UserInfoDto(
 	public static UserInfoDto fromEntity(UserInfo userInfo) {
 		return new UserInfoDto(
 			userInfo.getName(),
-			userInfo.getUserImageUrl(),
-			userInfo.getNickname(),
 			userInfo.getEmail(),
 			userInfo.getBirthdate(),
 			userInfo.getPhone(),
@@ -32,8 +30,6 @@ public record UserInfoDto(
 	public UserInfo toEntity() {
 		return new UserInfo(
 			name,
-			userImageUrl,
-			nickname,
 			email,
 			birthdate,
 			phone,

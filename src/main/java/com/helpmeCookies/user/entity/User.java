@@ -41,6 +41,10 @@ public class User {
 	@Column(nullable = false)
 	private Long id;
 
+	private String nickname;
+
+	private String userImageUrl;
+
 	@Embedded
 	private UserInfo userInfo;
 
@@ -49,9 +53,13 @@ public class User {
 	@Column(nullable = false, updatable = false)
 	protected LocalDateTime createdAt;
 
+	public void updateUserCommonInfo(String nickname, String userImageUrl) {
+		this.nickname = nickname;
+		this.userImageUrl = userImageUrl;
+	}
+
 	public void updateUserInfo(UserInfo userInfo) {
-		// TODO: 유저 정보 업데이트시 유효성 검사
-		setUserInfo(userInfo);
+		this.userInfo = userInfo;
 	}
 
 	private User setUserInfo(UserInfo userInfo) {

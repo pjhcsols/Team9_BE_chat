@@ -27,15 +27,14 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 	public Page<UserFollowingDto> findFollowingUsers(Long userId, Pageable pageable) {
 		QUser user = QUser.user;
 		QArtistInfo artistInfo = QArtistInfo.artistInfo;
-		QSocial social = QSocial.social; // Social 테이블 추가
+		QSocial social = QSocial.social;
 
-		//
 		JPQLQuery<UserFollowingDto> query = queryFactory
 			.select(Projections.constructor(
 				UserFollowingDto.class,
 				user.id,
-				user.userInfo.userImageUrl,
-				user.userInfo.nickname,
+				user.userImageUrl,
+				user.nickname,
 				artistInfo.totalFollowers,
 				artistInfo.totalLikes
 			))
