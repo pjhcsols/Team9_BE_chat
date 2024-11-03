@@ -20,4 +20,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE MATCH(p.name) AGAINST (:query IN BOOLEAN MODE)",
         nativeQuery = true) // Index 사용
     Page<ProductSearch> findByNameWithIdx(@Param("query") String query, Pageable pageable);
+
+
+    @Query("SELECT p FROM Product p ORDER BY FUNCTION('RAND')")
+    Page<ProductSearch> findAllRandom(Pageable pageable);
 }

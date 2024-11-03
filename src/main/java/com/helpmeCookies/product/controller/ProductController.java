@@ -14,6 +14,7 @@ import com.helpmeCookies.product.service.ProductService;
 import com.helpmeCookies.product.util.ProductSort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,5 +78,13 @@ public class ProductController implements ProductApiDocs {
         var pageable = PageRequest.of(page, size, sort);
 
         return ResponseEntity.ok(productService.getProductsByPage(query, pageable));
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<ProductPage.Paging> getProductsWithRandomPaging(
+        @RequestParam(name = "size", required = false, defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(0, size);
+        return ResponseEntity.ok(productService.getProductsWithRandomPaging(pageable));
     }
 }
