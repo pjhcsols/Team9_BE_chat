@@ -54,7 +54,6 @@ public class WebSecurityConfig {
 					response.sendRedirect("/oauth2/login/kakao");
 				})
 			);
-
 		return http.build();
 	}
 
@@ -72,7 +71,8 @@ public class WebSecurityConfig {
 					"/swagger-ui/**",
 					"/actuator/**",
 					"/v1/**",
-					"swagger-ui/**"
+					"swagger-ui/**",
+					"/test/signup"
 				).permitAll()
 				.anyRequest().authenticated()
 		).exceptionHandling((exception) -> exception
