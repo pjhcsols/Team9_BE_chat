@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,13 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductPage.Paging getProductsByPage(String query, Pageable pageable) {
         var productPage = productRepository.findByNameWithIdx(query, pageable);
+        return ProductPage.Paging.from(productPage);
+    }
+
+    @Transactional
+    @GetMapping
+    public ProductPage.Paging getProductsWithRandomPaging(Pageable pageable) {
+        var productPage = productRepository.findAllRandom(pageable);
         return ProductPage.Paging.from(productPage);
     }
 
