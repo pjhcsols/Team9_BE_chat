@@ -7,8 +7,6 @@ import com.helpmeCookies.user.dto.request.BusinessArtistReq;
 import com.helpmeCookies.user.dto.request.StudentArtistReq;
 import com.helpmeCookies.user.dto.response.ArtistDetailsRes;
 import com.helpmeCookies.user.service.ArtistService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;

@@ -9,8 +9,8 @@ public record ArtistDetailsRes(
 	String description,
 	Long totalFollowers,
 	Long totalLikes,
-	String about
-
+	String about,
+	String ImageUrl
 ) {
 	public static ArtistDetailsRes from(ArtistInfoDto artistInfoDto, BusinessArtistDto businessArtistDto) {
 		return new ArtistDetailsRes(
@@ -18,7 +18,8 @@ public record ArtistDetailsRes(
 			businessArtistDto.headName(),
 			artistInfoDto.totalFollowers(),
 			artistInfoDto.totalLikes(),
-			artistInfoDto.about()
+			artistInfoDto.about(),
+			artistInfoDto.artistImageUrl()
 		);
 	}
 
@@ -28,7 +29,8 @@ public record ArtistDetailsRes(
 			studentArtistDto.schoolName(),
 			artistInfoDto.totalFollowers(),
 			artistInfoDto.totalLikes(),
-			artistInfoDto.about()
+			artistInfoDto.about(),
+			artistInfoDto.artistImageUrl()
 		);
 	}
 }
