@@ -1,5 +1,8 @@
 package com.helpmeCookies.user.controller;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,14 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.helpmeCookies.global.jwt.JwtUser;
+import com.helpmeCookies.product.dto.FileUploadResponse;
+import com.helpmeCookies.product.dto.ProductImageResponse;
 import com.helpmeCookies.user.controller.apiDocs.UserApiDocs;
 import com.helpmeCookies.user.dto.response.UserCommonInfoRes;
 import com.helpmeCookies.user.dto.request.UserReq;
 import com.helpmeCookies.user.dto.response.UserDetailsInfoRes;
 import com.helpmeCookies.user.dto.UserTypeDto;
 import com.helpmeCookies.user.dto.response.UserFollowingRes;
+import com.helpmeCookies.user.dto.response.UserImageResponse;
 import com.helpmeCookies.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,13 +59,20 @@ public class UserController implements UserApiDocs {
 		return ResponseEntity.ok(userService.getUserType(jwtUser.getId()));
 	}
 
+	@PostMapping("/images")
+	public ResponseEntity<UserImageResponse> uploadImages(List<MultipartFile> files) throws
+		IOException {
+		List<FileUploadResponse> responses = userService.uploadMultiFiles(files);
+		return ResponseEntity.ok(new UserImageResponse(responses.stream().map(FileUploadResponse::photoUrl).toList()));
+	}
+
 	@PutMapping("/v1/users")
 	public String updateUser(
 		@AuthenticationPrincipal JwtUser jwtUser,
 		@RequestBody UserReq userReq
 	) {
 		// UserInfoDto를 통해서 유저 정보를 수정한다.
-		userService.updateUser(userReq, jwtUser.getId());
+		userService.updateUser(userReq.toUserCommonInfoDto(), userReq.toUserInfoDto(), jwtUser.getId());
 		return "ok";
 	}
 
