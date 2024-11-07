@@ -25,4 +25,9 @@ public class ProductImage {
 		this.productId = productId;
 		this.uuid = uuid;
 	}
+
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
 }
+

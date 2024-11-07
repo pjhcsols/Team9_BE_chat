@@ -69,6 +69,8 @@ public class WebSecurityConfig {
 					"/login", "/signup", "/ttt/*", "/user",
 					"/api/auth/**",
 					"/swagger-ui/**",
+					"/swagger-resources",
+					"/v3/api-docs/**",
 					"/actuator/**",
 					"/v1/**",
 					"swagger-ui/**",

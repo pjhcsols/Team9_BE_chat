@@ -39,5 +39,6 @@ public class ArtistInfo {
 
 	@Column(nullable = false)
 	private Long totalLikes;
+
 	private String about = "";
 }

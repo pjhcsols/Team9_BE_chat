@@ -1,15 +1,16 @@
 package com.helpmeCookies.product.service;
 
 import com.helpmeCookies.global.utils.AwsS3FileUtils;
-import com.helpmeCookies.product.dto.FileUploadResponse;
+import com.helpmeCookies.product.dto.ImageUpload;
+import com.helpmeCookies.product.entity.ProductImage;
 import com.helpmeCookies.product.repository.ProductImageRepository;
+import java.util.ArrayList;
 import com.helpmeCookies.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -20,22 +21,30 @@ public class ProductImageService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public List<FileUploadResponse> uploadMultiFiles(Long productId, List<MultipartFile> files) throws IOException {
-        List<FileUploadResponse> uploadResponses = awsS3FileUtils.uploadMultiImages(files);
-        uploadResponses.forEach(response ->
-            productImageRepository.save(response.toEntity(productId)));
-
-        var product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 id입니다"));
-        product.updateThumbnail(uploadResponses.getFirst().photoUrl());
-
-        return uploadResponses;
+    public List<ImageUpload> uploadMultiFiles(List<MultipartFile> files) {
+        List<ImageUpload> imageUploads = new ArrayList<>();
+        for (MultipartFile multipartFile:files) {
+            imageUploads.add(awsS3FileUtils.uploadMultiImages(multipartFile));
+        }
+        return imageUploads;
     }
 
     @Transactional
-    public void editImages(Long productId, List<MultipartFile> files) throws IOException {
+    public void saveImages(Long productId,List<String> urls) {
+        //DTO 변환
+        List<ImageUpload> files = urls.stream().map(ImageUpload::new).toList();
+        files.forEach(image -> productImageRepository.save(image.toEntity(productId)));
+    }
+
+    @Transactional
+    public void editImages(Long productId, List<MultipartFile> files) {
         //우선은 전부 삭제하고 다시 업로드
         //추후에 개선 예정
+        //TODO s3서버에서 기존 사진들을 제거하는 기능
         productImageRepository.deleteAllByProductId(productId);
-        uploadMultiFiles(productId, files);
+    }
+
+    public List<String> getImages(Long productId) {
+        return productImageRepository.findAllByProductId(productId).stream().map(ProductImage::getPhotoUrl).toList();
     }
 }

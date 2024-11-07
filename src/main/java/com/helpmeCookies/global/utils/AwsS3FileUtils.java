@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.helpmeCookies.product.dto.FileUploadResponse;
+import com.helpmeCookies.product.dto.ImageUpload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -28,26 +27,21 @@ public class AwsS3FileUtils {
     private String bucket;
 
     //다중파일 업로드후 url 반환
-    public List<FileUploadResponse> uploadMultiImages(List<MultipartFile> multipartFiles) {
-        List<FileUploadResponse> fileList = new ArrayList<>();
+    public ImageUpload uploadMultiImages(MultipartFile multipartFile) {
 
-        multipartFiles.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename()); //파일 이름 난수화
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
+        String fileName = createFileName(multipartFile.getOriginalFilename()); //파일 이름 난수화
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
 
-            try (InputStream inputStream = file.getInputStream()) {
-                amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch (IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 실패" + fileName);
-            }
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 실패" + fileName);
+        }
 
-            fileList.add(new FileUploadResponse(amazonS3.getUrl(bucket,fileName).toString(),fileName));
-        });
-
-        return fileList;
+        return new ImageUpload(amazonS3.getUrl(bucket,fileName).toString());
     }
 
     public String createFileName(String fileName) {
