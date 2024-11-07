@@ -1,5 +1,7 @@
 package com.helpmeCookies.product.controller;
 
+import com.helpmeCookies.global.ApiResponse.ApiResponse;
+import com.helpmeCookies.global.ApiResponse.SuccessCode;
 import com.helpmeCookies.product.dto.ImageUpload;
 import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
 
@@ -28,6 +30,11 @@ public class ProductController implements ProductApiDocs {
 
     private final ProductService productService;
     private final ProductImageService productImageService;
+
+    @PostMapping("/successTest")
+    public ResponseEntity<ApiResponse<Void>> saveTest() {
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
+    }
 
     @PostMapping
     public ResponseEntity<Void> saveProduct(@RequestBody ProductRequest productRequest) {
