@@ -55,7 +55,7 @@ public class LoginController {
 	}
 
 	@GetMapping("/oauth2/login/kakao")
-	public JwtToken ttt(@AuthenticationPrincipal OAuth2User oAuth2User) {
+	public JwtToken loginKakao(@AuthenticationPrincipal OAuth2User oAuth2User) {
 		KakaoOAuth2Response kakaoUser = KakaoOAuth2Response.from(oAuth2User.getAttributes());
 		return jwtProvider.createToken(userDetailsService.loadUserByEmail(kakaoUser.email(), kakaoUser.nickname()));
 	}

@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.helpmeCookies.global.exception.user.ResourceNotFoundException;
 import com.helpmeCookies.global.utils.AwsS3FileUtils;
-import com.helpmeCookies.product.dto.FileUploadResponse;
 import com.helpmeCookies.user.dto.UserCommonInfoDto;
 import com.helpmeCookies.user.dto.UserDto;
 import com.helpmeCookies.user.dto.UserInfoDto;
@@ -62,11 +61,6 @@ public class UserService {
 		existingUser.updateUserInfo(userInfo);
 
 		return UserDto.fromEntity(userRepository.save(existingUser));
-	}
-
-	@Transactional
-	public List<FileUploadResponse> uploadMultiFiles(List<MultipartFile> files) throws IOException {
-		return awsS3FileUtils.uploadMultiImages(files);
 	}
 
 
