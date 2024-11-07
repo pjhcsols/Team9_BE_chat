@@ -1,5 +1,8 @@
 package com.helpmeCookies.global.exception;
 
+import com.helpmeCookies.global.ApiResponse.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -10,8 +13,8 @@ import com.sun.jdi.request.DuplicateRequestException;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public String handleResourceNotFoundException() {
-		return "해당 리소스를 찾을 수 없습니다.";
+	public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException() {
+		return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST,"해당 리소스를 찾을 수 없습니다."));
 	}
 
 	@ExceptionHandler(DuplicateRequestException.class)
