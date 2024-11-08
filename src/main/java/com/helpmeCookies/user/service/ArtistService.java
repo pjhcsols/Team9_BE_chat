@@ -15,9 +15,11 @@ import com.helpmeCookies.user.entity.StudentArtist;
 import com.helpmeCookies.user.entity.User;
 import com.helpmeCookies.user.repository.ArtistInfoRepository;
 import com.helpmeCookies.user.repository.BusinessArtistRepository;
+import com.helpmeCookies.user.repository.SocialRepository;
 import com.helpmeCookies.user.repository.StudentArtistRepository;
 import com.helpmeCookies.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class ArtistService {
 	private final BusinessArtistRepository businessArtistRepository;
 	private final StudentArtistRepository studentArtistRepository;
 	private final ArtistInfoRepository artistInfoRepository;
+	private final SocialRepository socialRepository;
 
 	@Transactional
 	public void registerStudentsArtist(StudentArtistReq studentArtistReq, Long userId) {
@@ -117,8 +120,9 @@ public class ArtistService {
 	}
 
 	@Transactional(readOnly = true)
-	public ArtistInfoPage.Paging getArtistsByPage(String query, Pageable pageable) {
+	public ArtistInfoPage.Paging getArtistsByPage(String query, Pageable pageable, Long userId) {
 		var artistInfoPage = artistInfoRepository.findByNicknameWithIdx(query, pageable);
-		return ArtistInfoPage.Paging.from(artistInfoPage);
+		Set<Long> followingArtist = socialRepository.findFollowingIdByFollowerId(userId);
+		return ArtistInfoPage.Paging.of(artistInfoPage, followingArtist);
 	}
 }
