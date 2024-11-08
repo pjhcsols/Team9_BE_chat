@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SocialRepository extends JpaRepository<Social, Long> {
 	Boolean existsByFollowerAndFollowing(User follower, ArtistInfo following);
+	Boolean existsByFollowerIdAndFollowingId(Long followerId, Long followingId);
 	Optional<Social> findByFollowerAndFollowing(User follower, ArtistInfo following);
 
 	@Query("SELECT s.following.id FROM Social s WHERE s.follower.id = :userId")
