@@ -35,9 +35,10 @@ public interface ArtistApiDocs {
 	);
 
 	@Operation(summary = "작가 프로필 조회", description = "작가 프로필 조회")
-	@GetMapping("/v1/artists/{userId}")
-	ResponseEntity<ApiResponse<ArtistDetailsRes>> getArtist(
-		@PathVariable Long userId
+	@GetMapping("/v1/artists/{artistInfoId}")
+	public ResponseEntity<ApiResponse<ArtistDetailsRes>> getArtistPublicDetails(
+		@PathVariable Long artistInfoId,
+		@AuthenticationPrincipal JwtUser jwtUser
 	);
 
 	@Operation(summary = "작가 자신의 프로필 조회", description = "작가 자신의 프로필 조회")

@@ -43,11 +43,18 @@ public class ArtistController implements ArtistApiDocs {
 		return ResponseEntity.ok((ApiResponse.success(SuccessCode.OK)));
 	}
 
-	@GetMapping("/v1/artists/{userId}")
-	public ResponseEntity<ApiResponse<ArtistDetailsRes>> getArtist(
-		@PathVariable Long userId
+	@GetMapping("/v1/artists/{artistInfoId}")
+	public ResponseEntity<ApiResponse<ArtistDetailsRes>> getArtistPublicDetails(
+		@PathVariable Long artistInfoId,
+		@AuthenticationPrincipal JwtUser jwtUser
 	) {
-		ArtistDetailsRes artistDetailsRes = artistService.getArtistDetails(userId);
+		ArtistDetailsRes artistDetailsRes;
+
+		if (jwtUser == null) {
+			artistDetailsRes = artistService.getArtistDetails(artistInfoId);
+		} else {
+			artistDetailsRes = artistService.getArtistPublicDetails(artistInfoId, jwtUser.getId());
+		}
 		return ResponseEntity.ok((ApiResponse.success(SuccessCode.OK, artistDetailsRes)));
 	}
 

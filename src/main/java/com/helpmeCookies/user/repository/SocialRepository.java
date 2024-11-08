@@ -14,5 +14,6 @@ import com.helpmeCookies.user.entity.User;
 @Repository
 public interface SocialRepository extends JpaRepository<Social, Long> {
 	Boolean existsByFollowerAndFollowing(User follower, ArtistInfo following);
+	Boolean existsByFollowerIdAndFollowingId(Long followerId, Long followingId);
 	Optional<Social> findByFollowerAndFollowing(User follower, ArtistInfo following);
 }
