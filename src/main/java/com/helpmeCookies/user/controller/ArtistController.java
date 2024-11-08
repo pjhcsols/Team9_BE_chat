@@ -1,16 +1,21 @@
 package com.helpmeCookies.user.controller;
 
+import com.helpmeCookies.global.ApiResponse.ApiResponse;
+import com.helpmeCookies.global.ApiResponse.SuccessCode;
 import com.helpmeCookies.global.jwt.JwtUser;
+import com.helpmeCookies.review.dto.ReviewResponse;
+import com.helpmeCookies.review.service.ReviewService;
 import com.helpmeCookies.user.controller.apiDocs.ArtistApiDocs;
 import com.helpmeCookies.user.dto.ArtistInfoPage;
 import com.helpmeCookies.user.dto.request.BusinessArtistReq;
 import com.helpmeCookies.user.dto.request.StudentArtistReq;
 import com.helpmeCookies.user.dto.response.ArtistDetailsRes;
 import com.helpmeCookies.user.service.ArtistService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArtistController implements ArtistApiDocs {
 	private final ArtistService artistService;
+	private final ReviewService reviewService;
 
 	@PostMapping("/v1/artists/students")
 	public ResponseEntity<String> registerStudents(
@@ -65,5 +71,13 @@ public class ArtistController implements ArtistApiDocs {
 	) {
 		var pageable = PageRequest.of(page, size);
 		return ResponseEntity.ok(artistService.getArtistsByPage(query, pageable));
+	}
+
+	@GetMapping("/v1/artists/{artistId}/reviews")
+	public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllReviewsByArtist(
+			@PathVariable("artistId") Long artistId,
+			@PageableDefault(size = 7) Pageable pageable) {
+		return ResponseEntity.ok(ApiResponse.success(
+				SuccessCode.OK,reviewService.getAllReviewByArtist(artistId, pageable)));
 	}
 }

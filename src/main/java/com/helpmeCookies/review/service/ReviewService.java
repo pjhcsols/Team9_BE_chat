@@ -6,10 +6,13 @@ import com.helpmeCookies.review.dto.ReviewRequest;
 import com.helpmeCookies.review.dto.ReviewResponse;
 import com.helpmeCookies.review.entity.Review;
 import com.helpmeCookies.review.repository.ReviewRepository;
+import com.helpmeCookies.user.entity.ArtistInfo;
 import com.helpmeCookies.user.entity.User;
+import com.helpmeCookies.user.repository.ArtistInfoRepository;
 import com.helpmeCookies.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ArtistInfoRepository artistInfoRepository;
 
     @Transactional
     public void saveReview(ReviewRequest request, Long productId) {
@@ -45,8 +49,14 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ReviewResponse> getAllReview(Long productId) {
+    public Page<ReviewResponse> getAllReviewByProduct(Long productId, Pageable pageable) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 productId입니다." + productId));
-        return reviewRepository.findAllByProduct(product).map(ReviewResponse::fromEntity);
+        return reviewRepository.findAllByProduct(product,pageable).map(ReviewResponse::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReviewResponse> getAllReviewByArtist(Long artistId, Pageable pageable) {
+        ArtistInfo artistInfo = artistInfoRepository.findById(artistId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 ArtistId입니다." + artistId));
+        return reviewRepository.findAllByArtistInfo(artistInfo,pageable).map(ReviewResponse::fromEntity);
     }
  }

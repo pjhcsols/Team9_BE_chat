@@ -14,9 +14,13 @@ import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.product.service.ProductImageService;
 import com.helpmeCookies.product.service.ProductService;
 import com.helpmeCookies.product.util.ProductSort;
+import com.helpmeCookies.review.dto.ReviewResponse;
+import com.helpmeCookies.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +34,7 @@ public class ProductController implements ProductApiDocs {
 
     private final ProductService productService;
     private final ProductImageService productImageService;
+    private final ReviewService reviewService;
 
     @PostMapping("/successTest")
     public ResponseEntity<ApiResponse<Void>> saveTest() {
@@ -97,5 +102,12 @@ public class ProductController implements ProductApiDocs {
     ) {
         Pageable pageable = PageRequest.of(0, size);
         return ResponseEntity.ok(productService.getProductsWithRandomPaging(pageable));
+    }
+
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllReviewsByProduct(
+            @PathVariable("productId") Long productId,
+            @PageableDefault(size = 7) Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,reviewService.getAllReviewByProduct(productId,pageable)));
     }
 }
