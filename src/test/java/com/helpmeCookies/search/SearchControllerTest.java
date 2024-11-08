@@ -20,6 +20,7 @@ import com.helpmeCookies.user.dto.ArtistInfoPage;
 import com.helpmeCookies.user.repository.dto.ArtistSearch;
 import com.helpmeCookies.user.service.ArtistService;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +97,8 @@ public class SearchControllerTest {
         given(artistSearch.getArtistImageUrl()).willReturn("artistImageUrl");
         given(artistSearch.getTotalFollowers()).willReturn(10000L);
         given(artistSearch.getTotalLikes()).willReturn(10000L);
-        var paging = ArtistInfoPage.Paging.from(new PageImpl<>(List.of(artistSearch)));
-        given(artistService.getArtistsByPage(eq(query), any(Pageable.class)))
+        var paging = ArtistInfoPage.Paging.of(new PageImpl<>(List.of(artistSearch)), Set.of());
+        given(artistService.getArtistsByPage(eq(query), any(Pageable.class), null))
             .willReturn(paging);
 
         // when & then

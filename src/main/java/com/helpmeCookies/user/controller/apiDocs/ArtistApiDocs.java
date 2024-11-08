@@ -3,7 +3,6 @@ package com.helpmeCookies.user.controller.apiDocs;
 import com.helpmeCookies.global.ApiResponse.ApiResponse;
 import com.helpmeCookies.global.jwt.JwtUser;
 import com.helpmeCookies.user.dto.ArtistInfoPage;
-import com.helpmeCookies.user.dto.ArtistInfoPage.Paging;
 import com.helpmeCookies.user.dto.request.BusinessArtistReq;
 import com.helpmeCookies.user.dto.request.StudentArtistReq;
 import com.helpmeCookies.user.dto.response.ArtistDetailsRes;
@@ -51,6 +50,7 @@ public interface ArtistApiDocs {
 	ResponseEntity<ApiResponse<ArtistInfoPage.Paging>> getArtistsByPage(
 		String query,
 		@Parameter(description = "default value 20") int size,
-		int page
+		int page,
+		@Parameter(hidden = true) JwtUser jwtUser
 	);
 }
