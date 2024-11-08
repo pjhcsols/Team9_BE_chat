@@ -88,7 +88,7 @@ public class SearchServiceTest {
             .willReturn(artistPage);
 
         // when
-        var result = artistService.getArtistsByPage("nickname", pageRequest);
+        var result = artistService.getArtistsByPage("nickname", pageRequest, null);
 
         // then
         assertAll(
