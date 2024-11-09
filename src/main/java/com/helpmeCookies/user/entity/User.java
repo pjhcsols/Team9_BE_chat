@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.helpmeCookies.global.entity.BaseTimeEntity;
 import com.helpmeCookies.product.entity.HashTag;
 
 import jakarta.persistence.CollectionTable;
@@ -35,7 +36,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)
@@ -47,11 +48,6 @@ public class User {
 
 	@Embedded
 	private UserInfo userInfo;
-
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	@CreatedDate
-	@Column(nullable = false, updatable = false)
-	protected LocalDateTime createdAt;
 
 	public void updateUserCommonInfo(String nickname, String userImageUrl) {
 		this.nickname = nickname;

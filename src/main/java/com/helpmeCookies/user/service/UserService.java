@@ -1,11 +1,17 @@
 package com.helpmeCookies.user.service;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.helpmeCookies.global.exception.user.ResourceNotFoundException;
+import com.helpmeCookies.global.utils.AwsS3FileUtils;
+import com.helpmeCookies.user.dto.UserCommonInfoDto;
 import com.helpmeCookies.user.dto.UserDto;
 import com.helpmeCookies.user.dto.UserInfoDto;
 import com.helpmeCookies.user.dto.UserTypeDto;
@@ -30,6 +36,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final ArtistInfoRepository artistInfoRepository;
 	private final SocialRepository socialRepository;
+	private final AwsS3FileUtils awsS3FileUtils;
 
 
 	@Transactional
@@ -41,24 +48,23 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDto updateUser(UserReq userReq, Long userId) {
+	public UserDto updateUser(UserCommonInfoDto userCommonInfoDto, UserInfoDto userInfoDto, Long userId) {
 
 		User existingUser = userRepository.findById(userId)
 			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 유저입니다."));
 
-		existingUser.updateUserCommonInfo(userReq.nickname(), userReq.userImageUrl());
-		UserInfo userInfo = UserInfo.builder().name(userReq.name())
-			.email(userReq.email())
-			.birthdate(userReq.birthdate())
-			.phone(userReq.phone())
-			.address(userReq.address())
-			.hashTags(userReq.hashTags())
-			.build();
+		if (userRepository.existsByNicknameAndIdNot(userCommonInfoDto.nickname(), existingUser.getId())) {
+			throw new DuplicateRequestException("이미 존재하는 닉네임입니다.");
+		}
 
+		existingUser.updateUserCommonInfo(userCommonInfoDto.nickname(), userCommonInfoDto.ImageUrl());
+
+		UserInfo userInfo = userInfoDto.toEntity();
 		existingUser.updateUserInfo(userInfo);
 
 		return UserDto.fromEntity(userRepository.save(existingUser));
 	}
+
 
 	@Transactional
 	public UserTypeDto getUserType(Long userId) {
