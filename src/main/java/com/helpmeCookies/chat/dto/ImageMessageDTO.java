@@ -1,6 +1,7 @@
 package com.helpmeCookies.chat.dto;
 
-import gift.domain.chat.ChatMessage;
+
+import com.helpmeCookies.chat.entity.ChatMessage;
 import lombok.Getter;
 import lombok.Setter;
 
