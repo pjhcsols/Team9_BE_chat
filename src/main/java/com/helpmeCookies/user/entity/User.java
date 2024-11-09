@@ -66,4 +66,8 @@ public class User {
 		this.userInfo = userInfo;
 		return this;
 	}
+
+	public String getEmail() {
+		return userInfo.getEmail();
+	}
 }
