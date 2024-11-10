@@ -74,7 +74,8 @@ public class WebSecurityConfig {
 					"/actuator/**",
 					"/v1/**",
 					"swagger-ui/**",
-					"/test/signup"
+					"/test/signup",
+					"/v1/artists/**"
 				).permitAll()
 				.anyRequest().authenticated()
 		).exceptionHandling((exception) -> exception

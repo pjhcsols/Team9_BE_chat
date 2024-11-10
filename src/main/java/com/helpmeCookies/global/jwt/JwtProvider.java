@@ -12,12 +12,13 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtProvider implements InitializingBean {
-	private String secret = "4099a46b-39db-4860-a61b-2ae76ea24c43";
-	private long accessTokenExpireTime = 1800000; // 30 minutes;
-	private long refreshTokenExpireTime = 259200000; // 3 days;
+
+	private final JwtProperties jwtProperties;
 	private Key secretKey;
 	private static final String ROLE = "role";
 	private static final String IS_ACCESS_TOKEN = "isAccessToken";
@@ -92,7 +93,7 @@ public class JwtProvider implements InitializingBean {
 	}
 
 	private String generateToken(JwtUser jwtUser, boolean isAccessToken) {
-		long expireTime = isAccessToken ? accessTokenExpireTime : refreshTokenExpireTime;
+		long expireTime = isAccessToken ? jwtProperties.getAccessTokenExpireTime() : jwtProperties.getRefreshTokenExpireTime();
 		Date expireDate = new Date(System.currentTimeMillis() + expireTime);
 		return Jwts.builder()
 			.signWith(secretKey)
@@ -112,6 +113,6 @@ public class JwtProvider implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() {
-		secretKey = new SecretKeySpec(secret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
+		secretKey = new SecretKeySpec(jwtProperties.getSecret().getBytes(), SignatureAlgorithm.HS256.getJcaName());
 	}
 }

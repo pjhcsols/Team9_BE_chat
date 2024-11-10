@@ -1,5 +1,8 @@
 package com.helpmeCookies.product.controller;
 
+import com.helpmeCookies.global.ApiResponse.ApiResponse;
+import com.helpmeCookies.global.ApiResponse.SuccessCode;
+import com.helpmeCookies.global.jwt.JwtUser;
 import com.helpmeCookies.product.dto.ImageUpload;
 import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
 
@@ -10,11 +13,18 @@ import com.helpmeCookies.product.dto.ProductRequest;
 import com.helpmeCookies.product.dto.ProductResponse;
 import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.product.service.ProductImageService;
+import com.helpmeCookies.product.service.ProductLikeService;
 import com.helpmeCookies.product.service.ProductService;
 import com.helpmeCookies.product.util.ProductSort;
+import com.helpmeCookies.review.dto.ReviewResponse;
+import com.helpmeCookies.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +37,13 @@ public class ProductController implements ProductApiDocs {
 
     private final ProductService productService;
     private final ProductImageService productImageService;
+    private final ReviewService reviewService;
+    private final ProductLikeService productLikeService;
+
+    @PostMapping("/successTest")
+    public ResponseEntity<ApiResponse<Void>> saveTest() {
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
+    }
 
     @PostMapping
     public ResponseEntity<Void> saveProduct(@RequestBody ProductRequest productRequest) {
@@ -81,5 +98,37 @@ public class ProductController implements ProductApiDocs {
         var pageable = PageRequest.of(page, size, sort);
 
         return ResponseEntity.ok(productService.getProductsByPage(query, pageable));
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<ProductPage.Paging> getProductsWithRandomPaging(
+        @RequestParam(name = "size", required = false, defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(0, size);
+        return ResponseEntity.ok(productService.getProductsWithRandomPaging(pageable));
+    }
+
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllReviewsByProduct(
+            @PathVariable("productId") Long productId,
+            @PageableDefault(size = 7) Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,reviewService.getAllReviewByProduct(productId,pageable)));
+    }
+
+    @PostMapping("/{productId}/likes")
+    public ResponseEntity<ApiResponse<Void>> postProductLike(
+            @PathVariable("productId") Long productId,
+            @AuthenticationPrincipal JwtUser jwtUser) {
+        productLikeService.productLike(jwtUser.getId(), productId);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
+    }
+
+    @DeleteMapping("/{productId}/likes")
+    public ResponseEntity<ApiResponse<Void>> deleteProductlike(
+            @PathVariable("productId") Long productId,
+            @AuthenticationPrincipal JwtUser jwtUser) {
+        productLikeService.deleteProductLike(jwtUser.getId(), productId);
+
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.NO_CONTENT));
     }
 }
