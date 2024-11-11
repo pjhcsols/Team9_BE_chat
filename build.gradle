@@ -79,6 +79,9 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter:1.20.2'
 	testImplementation 'org.testcontainers:mysql:1.20.2'
 
+	//chat
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 tasks.named('test') {

@@ -28,6 +28,8 @@ import com.sun.jdi.request.DuplicateRequestException;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -115,5 +117,13 @@ public class UserService {
 			.orElseThrow(() -> new ResourceNotFoundException("팔로우하지 않은 아티스트입니다."));
 
 		socialRepository.delete(social);
+	}
+
+	public Optional<User> findById(Long userId) {
+		return userRepository.findById(userId);
+	}
+
+	public Optional<User> findByEmail(String email) {
+		return userRepository.findByUserInfoEmail(email);
 	}
 }
