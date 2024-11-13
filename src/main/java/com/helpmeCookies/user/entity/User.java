@@ -58,4 +58,13 @@ public class User extends BaseTimeEntity {
 	public void updateUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
+
+	private User setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+		return this;
+	}
+
+	public String getEmail() {
+		return userInfo.getEmail();
+	}
 }

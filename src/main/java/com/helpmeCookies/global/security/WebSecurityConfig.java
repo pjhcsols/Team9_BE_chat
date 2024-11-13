@@ -73,6 +73,7 @@ public class WebSecurityConfig {
 					"/test/signup",
 					"/v1/products/**",
 					"/v1/reviews/**",
+					"/ws/**",
 					"/v1/artists/**"
 				).permitAll()
 				.anyRequest().authenticated()

@@ -23,6 +23,8 @@ import com.helpmeCookies.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -127,5 +129,13 @@ public class UserService {
 		ArtistInfo artistInfo = artistInfoRepository.findByUserId(artistId)
 			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 아티스트입니다."));
 		return artistInfo;
+	}
+
+	public Optional<User> findById(Long userId) {
+		return userRepository.findById(userId);
+	}
+
+	public Optional<User> findByEmail(String email) {
+		return userRepository.findByUserInfoEmail(email);
 	}
 }

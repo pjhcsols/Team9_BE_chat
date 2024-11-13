@@ -78,6 +78,53 @@ INSERT INTO user_hashtags (user_id, hash_tags) VALUES (7, 'MELANCHOLY');
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (8, 'DREAMLIKE');
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (9, 'WONDER');
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (10, 'DREAMLIKE');
+
+
+-- User 11 (HenryWhite)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (11, 'DREAMLIKE');
+
+-- User 12 (MiaHarris)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (12, 'DREAMLIKE');
+
+-- User 13 (LucasMartin)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (13, 'DREAMLIKE');
+
+-- User 14 (EllaYoung)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (14, 'DREAMLIKE');
+
+-- User 15 (WilliamKing)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (15, 'DREAMLIKE');
+
+-- User 16 (AmeliaScott)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (16, 'DREAMLIKE');
+
+-- User 17 (JackMoore)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (17, 'DREAMLIKE');
+
+-- User 18 (AvaWalker)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (18, 'DREAMLIKE');
+
+-- User 19 (DanielPerez)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (19, 'DREAMLIKE');
+
+-- User 20 (LilyHall)
+INSERT INTO user_hashtags (user_id, hash_tags) VALUES (20, 'DREAMLIKE');
+
+
+-- ChatRoom
+INSERT INTO chat_rooms (user1_id, user2_id, title) VALUES
+                                                       (1, 2, '김김'),
+                                                       (4, 3, '하이');
+
+-- ChatMessage
+INSERT INTO chat_messages (chat_room_id, user_id, content, image_url) VALUES
+                                                                          (1, 1, 'Hello, this is a test message!', NULL),
+                                                                          (1, 2, 'Hi, this is a reply!', NULL),
+                                                                          (1, 1, 'Hi, this is a reply!', NULL),
+                                                                          (1, 2, 'jam', NULL),
+                                                                          (2, 4, 'Hi, this is a reply!', NULL),
+                                                                          (2, 3, 'jam', NULL);
+
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (11, 'MYSTERY');
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (12, 'CONTEMPLATION');
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (13, 'JOYFUL');
