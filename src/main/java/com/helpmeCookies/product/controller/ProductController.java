@@ -9,6 +9,7 @@ import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
 import com.helpmeCookies.product.controller.docs.ProductApiDocs;
 import com.helpmeCookies.product.dto.ProductImageResponse;
 import com.helpmeCookies.product.dto.ProductPage;
+import com.helpmeCookies.product.dto.ProductPage.Paging;
 import com.helpmeCookies.product.dto.ProductRequest;
 import com.helpmeCookies.product.dto.ProductResponse;
 import com.helpmeCookies.product.entity.Product;
@@ -68,23 +69,23 @@ public class ProductController implements ProductApiDocs {
     }
 
     @PutMapping("/{productId}/images")
-    public ResponseEntity<Void> editImages(@PathVariable("productId") Long productId, List<MultipartFile> files) {
+    public ResponseEntity<ApiResponse<Void>> editImages(@PathVariable("productId") Long productId, List<MultipartFile> files) {
         productImageService.editImages(productId, files);
         List<String> images = productImageService.uploadMultiFiles(files).stream()
                 .map(ImageUpload::photoUrl).toList();
         productService.editThumbnailImage(productId,images);
         productImageService.saveImages(productId,images);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("productId") Long productId) {
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable("productId") Long productId) {
         productService.delete(productId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.NO_CONTENT));
     }
 
     @GetMapping
-    public ResponseEntity<ProductPage.Paging> getProductsByPage(
+    public ResponseEntity<Paging> getProductsByPage(
         @RequestParam("query") String query,
         @RequestParam(name = "size", required = false, defaultValue = "20") int size,
         @RequestParam("page") int page,
@@ -97,11 +98,11 @@ public class ProductController implements ProductApiDocs {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<ProductPage.Paging> getProductsWithRandomPaging(
+    public ResponseEntity<ApiResponse<ProductPage.Paging>> getProductsWithRandomPaging(
         @RequestParam(name = "size", required = false, defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(0, size);
-        return ResponseEntity.ok(productService.getProductsWithRandomPaging(pageable));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,productService.getProductsWithRandomPaging(pageable)));
     }
 
     @GetMapping("/{productId}/reviews")
