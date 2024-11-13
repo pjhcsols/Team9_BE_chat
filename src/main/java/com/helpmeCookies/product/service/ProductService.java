@@ -36,8 +36,7 @@ public class ProductService {
         return ProductPage.Paging.from(productPage);
     }
 
-    @Transactional
-    @GetMapping
+    @Transactional(readOnly = true)
     public ProductPage.Paging getProductsWithRandomPaging(Pageable pageable) {
         var productPage = productRepository.findAllRandom(pageable);
         return ProductPage.Paging.from(productPage);

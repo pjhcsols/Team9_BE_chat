@@ -1,5 +1,6 @@
 package com.helpmeCookies.user.service;
 
+import com.helpmeCookies.global.exception.user.DuplicateResourceException;
 import com.helpmeCookies.global.exception.user.ResourceNotFoundException;
 import com.helpmeCookies.user.dto.ArtistInfoDto;
 import com.helpmeCookies.user.dto.ArtistInfoPage;
@@ -18,7 +19,6 @@ import com.helpmeCookies.user.repository.BusinessArtistRepository;
 import com.helpmeCookies.user.repository.SocialRepository;
 import com.helpmeCookies.user.repository.StudentArtistRepository;
 import com.helpmeCookies.user.repository.UserRepository;
-import com.sun.jdi.request.DuplicateRequestException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +45,6 @@ public class ArtistService {
 			throw new IllegalArgumentException("이미 등록된 아티스트입니다.");
 		}
 
-		// ArtistInfo 생성
 		ArtistInfo artistInfo = ArtistInfo.builder()
 			.userId(userId)
 			.artistType(ArtistType.STUDENT)
@@ -56,7 +55,6 @@ public class ArtistService {
 			.about(studentArtistReq.about())
 			.build();
 
-		// StudentArtist 생성
 		StudentArtist studentArtist = StudentArtist.builder()
 			.schoolName(studentArtistReq.schoolName())
 			.schoolEmail(studentArtistReq.schoolEmail())
@@ -73,10 +71,9 @@ public class ArtistService {
 		User user = userRepository.getReferenceById(userId);
 
 		if (artistInfoRepository.existsByUserId(userId)) {
-			throw new DuplicateRequestException("이미 등록된 아티스트입니다.");
+			throw new DuplicateResourceException("이미 등록된 아티스트입니다.");
 		}
 
-		// BusinessArtist 생성
 		ArtistInfo artistInfo = ArtistInfo.builder()
 			.userId(userId)
 			.artistImageUrl(user.getUserImageUrl())
@@ -102,34 +99,28 @@ public class ArtistService {
 	public ArtistDetailsRes getArtistDetails(Long artistInfoId) {
 		ArtistInfo artistInfo = artistInfoRepository.findById(artistInfoId)
 			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 아티스트입니다."));
-		ArtistInfoDto artistInfoDto = ArtistInfoDto.fromEntity(artistInfo);
 
-		switch (artistInfo.getArtistType()) {
-			case STUDENT:
-				StudentArtist studentArtist = studentArtistRepository.findByArtistInfo(artistInfo)
-					.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 학생 아티스트입니다."));
-				StudentArtistDto studentArtistDto = StudentArtistDto.from(studentArtist);
-				return ArtistDetailsRes.from(artistInfoDto, studentArtistDto,false);
-			case BUSINESS:
-				BusinessArtist businessArtist = businessArtistRepository.findByArtistInfo(artistInfo)
-					.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 사업자 아티스트입니다."));
-				BusinessArtistDto businessArtistDto = BusinessArtistDto.from(businessArtist);
-				return ArtistDetailsRes.from(artistInfoDto, businessArtistDto,false);
-			default:
-				throw new ResourceNotFoundException("존재하지 않는 아티스트입니다.");
-		}
+		return getArtistDetailsRes(artistInfo, false);
 	}
 
-
-	// TODO: 중복되는 메서드 분리 필요.
 	@Transactional
 	public ArtistDetailsRes getArtistPublicDetails(Long artistInfoId, Long followerId) {
-
 		ArtistInfo artistInfo = artistInfoRepository.findById(artistInfoId)
 			.orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 아티스트입니다."));
-		ArtistInfoDto artistInfoDto = ArtistInfoDto.fromEntity(artistInfo);
 
 		boolean isFollowed = socialRepository.existsByFollowerIdAndFollowingId(followerId, artistInfoId);
+		return getArtistDetailsRes(artistInfo, isFollowed);
+	}
+
+	@Transactional(readOnly = true)
+	public ArtistInfoPage.Paging getArtistsByPage(String query, Pageable pageable, Long userId) {
+		var artistInfoPage = artistInfoRepository.findByNicknameWithIdx(query, pageable);
+		Set<Long> followingArtist = socialRepository.findFollowingIdByFollowerId(userId);
+		return ArtistInfoPage.Paging.of(artistInfoPage, followingArtist);
+	}
+
+	private ArtistDetailsRes getArtistDetailsRes(ArtistInfo artistInfo, boolean isFollowed) {
+		ArtistInfoDto artistInfoDto = ArtistInfoDto.fromEntity(artistInfo);
 
 		switch (artistInfo.getArtistType()) {
 			case STUDENT:
@@ -145,12 +136,5 @@ public class ArtistService {
 			default:
 				throw new ResourceNotFoundException("존재하지 않는 아티스트입니다.");
 		}
-	}
-
-	@Transactional(readOnly = true)
-	public ArtistInfoPage.Paging getArtistsByPage(String query, Pageable pageable, Long userId) {
-		var artistInfoPage = artistInfoRepository.findByNicknameWithIdx(query, pageable);
-		Set<Long> followingArtist = socialRepository.findFollowingIdByFollowerId(userId);
-		return ArtistInfoPage.Paging.of(artistInfoPage, followingArtist);
 	}
 }
