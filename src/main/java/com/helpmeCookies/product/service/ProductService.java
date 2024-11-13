@@ -11,6 +11,8 @@ import com.helpmeCookies.product.dto.ProductPage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +23,17 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ArtistInfoRepository artistInfoRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional(readOnly = true)
     public ProductPage.Paging getProductsByPage(String query, Pageable pageable) {
         var productPage = productRepository.findByNameWithIdx(query, pageable);
+
+        ZSetOperations<String, Object> zSet = redisTemplate.opsForZSet();
+        var zSetKey = "search:" + query;
+        var time = System.currentTimeMillis();
+        zSet.add(zSetKey, String.valueOf(time), time);
+
         return ProductPage.Paging.from(productPage);
     }
 

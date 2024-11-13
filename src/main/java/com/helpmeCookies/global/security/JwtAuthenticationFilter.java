@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtProvider jwtProvider;
-
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 
 	@Override
@@ -46,6 +45,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(jwtUser, null,
 				jwtUser.getAuthorities());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+		} else {
+			log.info("유효하지 않은 토큰 발생");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 유효하지 않습니다.");
 		}
 
 		filterChain.doFilter(request, response);

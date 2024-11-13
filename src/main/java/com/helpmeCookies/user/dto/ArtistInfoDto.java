@@ -13,7 +13,8 @@ public record ArtistInfoDto(
 	String nickname,
 	Long totalFollowers,
 	Long totalLikes,
-	String about
+	String about,
+	String artistImageUrl
 ) {
 	public static ArtistInfoDto fromEntity(ArtistInfo artistInfo) {
 		return ArtistInfoDto.builder()
@@ -24,6 +25,7 @@ public record ArtistInfoDto(
 			.totalFollowers(artistInfo.getTotalFollowers())
 			.totalLikes(artistInfo.getTotalLikes())
 			.about(artistInfo.getAbout())
+			.artistImageUrl(artistInfo.getArtistImageUrl())
 			.build();
 	}
 }
