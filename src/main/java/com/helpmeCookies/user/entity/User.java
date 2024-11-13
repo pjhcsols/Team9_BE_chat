@@ -42,6 +42,7 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false)
 	private Long id;
 
+	@Column(nullable = false, unique = true)
 	private String nickname;
 
 	private String userImageUrl;
