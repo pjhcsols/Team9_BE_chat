@@ -42,6 +42,7 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false)
 	private Long id;
 
+	@Column(nullable = false, unique = true)
 	private String nickname;
 
 	private String userImageUrl;
@@ -56,5 +57,14 @@ public class User extends BaseTimeEntity {
 
 	public void updateUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
+	}
+
+	private User setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+		return this;
+	}
+
+	public String getEmail() {
+		return userInfo.getEmail();
 	}
 }
