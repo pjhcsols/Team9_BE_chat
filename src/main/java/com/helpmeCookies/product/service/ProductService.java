@@ -8,6 +8,7 @@ import com.helpmeCookies.product.repository.ProductRepository;
 import com.helpmeCookies.user.entity.ArtistInfo;
 import com.helpmeCookies.user.repository.ArtistInfoRepository;
 import com.helpmeCookies.product.dto.ProductPage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,12 @@ public class ProductService {
                 productRequest.preferredLocation(),
                 productRequest.hashTags(),
                 artistInfo);
+    }
+
+    @Transactional
+    public void editThumbnailImage(Long productId, List<String> images) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 id입니다"));
+        product.updateThumbnail(images.getFirst());
     }
 
     public void delete(Long productId) {

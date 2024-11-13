@@ -40,36 +40,31 @@ public class ProductController implements ProductApiDocs {
     private final ReviewService reviewService;
     private final ProductLikeService productLikeService;
 
-    @PostMapping("/successTest")
-    public ResponseEntity<ApiResponse<Void>> saveTest() {
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> saveProduct(@RequestBody ProductRequest productRequest) {
+        Product product = productService.save(productRequest);
+        productImageService.saveImages(product.getId(),productRequest.imageUrls());
         return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> saveProduct(@RequestBody ProductRequest productRequest) {
-        Product product = productService.save(productRequest);
-        productImageService.saveImages(product.getId(),productRequest.imageUrls());
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/images")
-    public ResponseEntity<ProductImageResponse> uploadImages(List<MultipartFile> files) {
+    public ResponseEntity<ApiResponse<ProductImageResponse>> uploadImages(List<MultipartFile> files) {
         List<ImageUpload> responses = productImageService.uploadMultiFiles(files);
-        return ResponseEntity.ok(new ProductImageResponse(responses.stream().map(ImageUpload::photoUrl).toList()));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,new ProductImageResponse(responses.stream().map(ImageUpload::photoUrl).toList())));
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponse> getProductInfo(@PathVariable("productId") Long productId) {
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductInfo(@PathVariable("productId") Long productId) {
         Product product = productService.find(productId);
         List<String> urls = productImageService.getImages(productId);
-        return ResponseEntity.ok(ProductResponse.from(product,urls));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,ProductResponse.from(product,urls)));
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> editProductInfo(@PathVariable("productId") Long productId,
+    public ResponseEntity<ApiResponse<Void>> editProductInfo(@PathVariable("productId") Long productId,
                                                            @RequestBody ProductRequest productRequest) {
         productService.edit(productId, productRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 
     @PutMapping("/{productId}/images")
@@ -77,6 +72,7 @@ public class ProductController implements ProductApiDocs {
         productImageService.editImages(productId, files);
         List<String> images = productImageService.uploadMultiFiles(files).stream()
                 .map(ImageUpload::photoUrl).toList();
+        productService.editThumbnailImage(productId,images);
         productImageService.saveImages(productId,images);
         return ResponseEntity.ok().build();
     }
