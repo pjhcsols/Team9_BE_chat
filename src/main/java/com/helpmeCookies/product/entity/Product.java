@@ -106,6 +106,10 @@ public class Product extends BaseTimeEntity {
 		return artistInfo;
 	}
 
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
 	public void update(String name, Category category, String size, Long price, String description, String preferredLocation, List<HashTag> hashTags, ArtistInfo artistInfo) {
 		this.name = name;
 		this.category = category;
