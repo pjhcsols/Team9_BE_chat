@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(DuplicateRequestException.class)
-	public String handleDuplicateRequestException() {
-		return "이미 생성되었거나 중복된 요청입니다.";
+	public ResponseEntity<ApiResponse<Void>> handleDuplicateRequestException() {
+		return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST,"이미 생성되었거나 중복된 요청입니다."));
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
