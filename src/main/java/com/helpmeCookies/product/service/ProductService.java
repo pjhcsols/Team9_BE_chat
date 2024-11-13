@@ -37,7 +37,7 @@ public class ProductService {
     public Product save(ProductRequest productSaveRequest) {
         ArtistInfo artistInfo = artistInfoRepository.findById(productSaveRequest.artistInfoId())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 작가 정보입니다."));
-        Product product = productSaveRequest.toEntity(artistInfo);
+        Product product = productSaveRequest.toEntity(artistInfo,productSaveRequest.getThumbnailImage());
         productRepository.save(product);
         return product;
     }
