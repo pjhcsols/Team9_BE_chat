@@ -13,8 +13,8 @@ import com.sun.jdi.request.DuplicateRequestException;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException() {
-		return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST,"해당 리소스를 찾을 수 없습니다."));
+	public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException e) {
+		return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage()));
 	}
 
 	@ExceptionHandler(DuplicateRequestException.class)

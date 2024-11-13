@@ -19,7 +19,7 @@ public record UserDto(
 			UserInfoDto.fromEntity(user.getUserInfo()),
 			user.getUserImageUrl(),
 			user.getNickname(),
-			user.getCreatedAt()
+			user.getCreatedDate()
 		);
 	}
 }
