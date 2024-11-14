@@ -101,11 +101,11 @@ public class ProductController implements ProductApiDocs {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<ProductPage.Paging> getProductsWithRandomPaging(
+    public ResponseEntity<ApiResponse<ProductPage.Paging>> getProductsWithRandomPaging(
         @RequestParam(name = "size", required = false, defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(0, size);
-        return ResponseEntity.ok(productService.getProductsWithRandomPaging(pageable));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, productService.getProductsWithRandomPaging(pageable)));
     }
 
     @GetMapping("/{productId}/reviews")
