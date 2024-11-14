@@ -21,5 +21,5 @@ public interface ProductApiDocs {
         @RequestParam(name = "size", required = false, defaultValue = "20") int size,
         @RequestParam("page") int page,
         @RequestParam("sort") ProductSort productSort
-    )
+    );
 }
