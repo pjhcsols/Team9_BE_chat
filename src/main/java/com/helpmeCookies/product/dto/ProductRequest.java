@@ -19,7 +19,7 @@ public record ProductRequest(
         List<String> imageUrls
 
 ) {
-    public Product toEntity(ArtistInfo artistInfo) {
+    public Product toEntity(ArtistInfo artistInfo,String thumbnailImage) {
         return Product.builder()
                 .name(name)
                 .category(Category.fromString(category))
@@ -29,6 +29,11 @@ public record ProductRequest(
                 .preferredLocation(preferredLocation)
                 .hashTags(hashTags)
                 .artistInfo(artistInfo)
+                .thumbnailUrl(thumbnailImage)
                 .build();
+    }
+
+    public String getThumbnailImage() {
+        return imageUrls.get(0);
     }
 }

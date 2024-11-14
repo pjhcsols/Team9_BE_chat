@@ -58,7 +58,7 @@ public class Product extends BaseTimeEntity {
 	public Product() {}
 
 	@Builder
-	public Product(String name, Category category, String size, Long price, String description, String preferredLocation, List<HashTag> hashTags, ArtistInfo artistInfo) {
+	public Product(String name, Category category, String size, Long price, String description, String preferredLocation, List<HashTag> hashTags, ArtistInfo artistInfo,String thumbnailUrl) {
 		this.name = name;
 		this.category = category;
 		this.size = size;
@@ -66,6 +66,7 @@ public class Product extends BaseTimeEntity {
 		this.description = description;
 		this.preferredLocation = preferredLocation;
 		this.hashTags = hashTags;
+		this.thumbnailUrl = thumbnailUrl;
 		this.artistInfo = artistInfo;
 	}
 
@@ -103,6 +104,10 @@ public class Product extends BaseTimeEntity {
 
 	public ArtistInfo getArtistInfo() {
 		return artistInfo;
+	}
+
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
 	}
 
 	public void update(String name, Category category, String size, Long price, String description, String preferredLocation, List<HashTag> hashTags, ArtistInfo artistInfo) {
