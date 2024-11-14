@@ -53,6 +53,9 @@ public class WebSecurityConfig {
 				.successHandler((request, response, authentication) -> {
 					response.sendRedirect("/oauth2/login/kakao");
 				})
+				.failureHandler((request, response, exception) -> {
+					System.out.println(exception.getMessage());
+				})
 			);
 		return http.build();
 	}
@@ -74,8 +77,7 @@ public class WebSecurityConfig {
 					"/v1/products/**",
 					"/v1/reviews/**",
 					"/ws/**",
-					"/v1/artists/**",
-					"/v1/users/**"
+					"/v1/artists/**"
 				).permitAll()
 				.anyRequest().authenticated()
 		).exceptionHandling((exception) -> exception
