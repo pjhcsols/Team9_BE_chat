@@ -88,7 +88,7 @@ public class ProductController implements ProductApiDocs {
     }
 
     @GetMapping
-    public ResponseEntity<ProductPage.Paging> getProductsByPage(
+    public ResponseEntity<ApiResponse<ProductPage.Paging>> getProductsByPage(
         @RequestParam("query") String query,
         @RequestParam(name = "size", required = false, defaultValue = "20") int size,
         @RequestParam("page") int page,
@@ -97,7 +97,7 @@ public class ProductController implements ProductApiDocs {
         var sort = convertProductSort(productSort);
         var pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok(productService.getProductsByPage(query, pageable));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,productService.getProductsByPage(query, pageable)));
     }
 
     @GetMapping("/feed")
