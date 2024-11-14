@@ -22,4 +22,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ApiResponse<Void>> handleDuplicateRequestException(DuplicateResourceException e) {
 		return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage()));
 	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException e) {
+		return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage()));
+	}
 }
