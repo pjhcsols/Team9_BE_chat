@@ -74,7 +74,8 @@ public class WebSecurityConfig {
 					"/v1/products/**",
 					"/v1/reviews/**",
 					"/ws/**",
-					"/v1/artists/**"
+					"/v1/artists/**",
+					"/v1/users/**"
 				).permitAll()
 				.anyRequest().authenticated()
 		).exceptionHandling((exception) -> exception
