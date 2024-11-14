@@ -1,7 +1,7 @@
 package com.helpmeCookies.user.entity;
 
 public enum ArtistType {
-	BUSINESS("BusinessArtist"), STUDENT("StudentArtist");
+	USER("User"), BUSINESS("BusinessArtist"), STUDENT("StudentArtist");
 
 	private final String type;
 
