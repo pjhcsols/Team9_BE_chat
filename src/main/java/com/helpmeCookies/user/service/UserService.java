@@ -14,6 +14,7 @@ import com.helpmeCookies.user.dto.UserInfoDto;
 import com.helpmeCookies.user.dto.UserTypeDto;
 import com.helpmeCookies.user.dto.response.UserFollowingRes;
 import com.helpmeCookies.user.entity.ArtistInfo;
+import com.helpmeCookies.user.entity.ArtistType;
 import com.helpmeCookies.user.entity.Social;
 import com.helpmeCookies.user.entity.User;
 import com.helpmeCookies.user.entity.UserInfo;
@@ -63,9 +64,9 @@ public class UserService {
 
 	@Transactional
 	public UserTypeDto getUserType(Long userId) {
-		String usertype = artistInfoRepository.findByUserId(userId)
-			.map(artistInfo -> artistInfo.getArtistType().getType()) // 값이 있을 때 처리
-			.orElse("User"); // 값이 없을 때 기본값
+		ArtistType usertype = artistInfoRepository.findByUserId(userId)
+			.map(artistInfo -> artistInfo.getArtistType()) // 값이 있을 때 처리
+			.orElse(ArtistType.USER); // 값이 없을 때 기본값
 
 		return UserTypeDto.builder()
 			.userType(usertype)
