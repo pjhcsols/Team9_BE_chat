@@ -50,7 +50,7 @@
 #### EC2 - 1
 
 - **백엔드 서버1** (도커 컨테이너)
-- **Nginx** - 백엔드 서버 1, 2에 대해 로드밸런싱
+- **Nginx** - 80 포트로 들어오는 요청을 백엔드 서버 1, 2에 대해 로드밸런싱
 - **MySQL** - 백엔드 서버 1, 2가 참조하는 DB
 - **Prometheus** - 백엔드 서버 1, 2의 메트릭 수집
 - **Grafana** - Prometheus가 수집한 메트릭 시각화 (URL: http://golden-ratio.duckdns.org:3000/)
@@ -72,6 +72,6 @@
 
 2. **생성 절차**
     1. **AWS CLI**를 사용해 AWS 계정과 로컬 환경 연결 후 인증 설정
-    2. 테라폼 스크립트 작성 후 실행
-
+    2. 테라폼 스크립트 작성 후 실행(ec2.tf)
+       https://github.com/donghyuun/terraform-study/blob/main/ec2.tf
     - 리소스 설정이 완료된 EC2 인스턴스가 생성됩니다.
