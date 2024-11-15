@@ -75,12 +75,7 @@ public class WebSecurityConfig {
 
 		http.authorizeHttpRequests((authorize) ->
 			authorize
-				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 요청 허용
-				.anyRequest().authenticated()
-		);
-
-		http.authorizeHttpRequests((authorize) ->
-			authorize
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers(
 					"/swagger-ui/**",
 					"/swagger-resources",
