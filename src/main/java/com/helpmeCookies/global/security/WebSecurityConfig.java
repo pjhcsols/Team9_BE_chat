@@ -1,7 +1,5 @@
 package com.helpmeCookies.global.security;
 
-import static org.springframework.security.config.Customizer.*;
-
 import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
@@ -42,6 +40,7 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http) throws Exception {
+		http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
 		http
 			.securityMatcher("/oauth2/**")
 			.csrf(AbstractHttpConfigurer::disable)
@@ -73,7 +72,7 @@ public class WebSecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable);
 		http.sessionManagement((session) -> session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.cors(withDefaults());
+		http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
 
 		http.authorizeHttpRequests((authorize) ->
 			authorize
@@ -98,6 +97,19 @@ public class WebSecurityConfig {
 		http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://1.618.s3-website.ap-northeast-2.amazonaws.com","http://localhost:3000"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 
 	@Bean
