@@ -65,7 +65,7 @@ public class WebSecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable);
 		http.sessionManagement((session) -> session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+		http.cors(AbstractHttpConfigurer::disable);
 		http.authorizeHttpRequests((authorize) ->
 			authorize
 				.requestMatchers(
