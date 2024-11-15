@@ -9,12 +9,6 @@
 4. 상품(피드), 좋아요, 감상평 - 주보경
 5. 인프라(ci/cd, https, 모니터링) - 김동현
 
-## 진행상황
-1. ERD 설계에 따라 Entity 구현. 세부 구현사항이 남아있음
-2. RULE.md에 각종 프로젝트 규칙 정의
-3. 매주 월요일 정기회의
-4. 다음주까지 각자 1차 구현 후, 회의를 통해 step 3 조별 멘토링을 통해 추가 피드백을 통해 수정.
-
 ## CI/CD 및 인프라 구축
 ![CI/CD 과정 - GitHub Actions를 활용한 배포 프로세스](https://velog.velcdn.com/images/hyunn/post/986c6af9-b694-44c2-a554-dd51e091fde0/image.png)
 ### CI/CD 과정 - GitHub Actions를 활용한 배포 프로세스
