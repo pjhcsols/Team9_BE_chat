@@ -29,19 +29,18 @@ public class CorsLoggingFilter extends OncePerRequestFilter {
 			logger.info("Request Origin Header: {}", origin);
 		}
 
-		String requestMethod = request.getHeader("Access-Control-Request-Method");
+		String requestMethod = request.getHeader("cross-control-allow-origin");
 		if (requestMethod != null) {
-			logger.info("Access-Control-Request-Method Header: {}", requestMethod);
+			logger.info("cross-control-allow-origin: {}", requestMethod);
 		}
 
 		// 필터 체인을 통해 요청 처리
 		filterChain.doFilter(request, response);
 
-		// 모든 응답 헤더 로깅
-		logger.info("Logging all Response Headers:");
-		response.getHeaderNames().forEach(headerName -> {
-			String headerValue = response.getHeader(headerName);
-			logger.info("Response Header -> Name: '{}', Value: '{}'", headerName, headerValue);
-		});
+		// cors 관련 응답 헤더 로깅
+		String responseHeader = response.getHeader("Access-Control-Allow-Origin");
+		if (responseHeader != null) {
+			logger.info("Response Access-Control-Allow-Origin Header: {}", responseHeader);
+		}
 	}
 }
