@@ -23,20 +23,25 @@ public class CorsLoggingFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
 
-		// 요청 헤더 로깅
+		// 요청 헤더 로깅, cors
 		String origin = request.getHeader("Origin");
 		if (origin != null) {
 			logger.info("Request Origin Header: {}", origin);
 		}
 
+		String requestMethod = request.getHeader("Access-Control-Request-Method");
+		if (requestMethod != null) {
+			logger.info("Access-Control-Request-Method Header: {}", requestMethod);
+		}
+
 		// 필터 체인을 통해 요청 처리
 		filterChain.doFilter(request, response);
 
-		// 응답 헤더 로깅
-		logger.info("Response Headers:");
+		// 모든 응답 헤더 로깅
+		logger.info("Logging all Response Headers:");
 		response.getHeaderNames().forEach(headerName -> {
 			String headerValue = response.getHeader(headerName);
-			logger.info("{}: {}", headerName, headerValue);
+			logger.info("Response Header -> Name: '{}', Value: '{}'", headerName, headerValue);
 		});
 	}
 }
