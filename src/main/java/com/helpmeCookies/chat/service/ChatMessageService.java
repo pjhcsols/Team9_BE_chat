@@ -40,7 +40,7 @@ public class ChatMessageService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
 
-        User sender = userRepository.findByEmail(messageDto.getSender())
+        User sender = userService.findByEmail(messageDto.getSender())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         ChatMessage message = new ChatMessage(chatRoom, sender, messageDto.getContent(), messageDto.getMessageType());
