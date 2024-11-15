@@ -1,5 +1,10 @@
 package com.helpmeCookies.chat.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ChatRoomInfo {
     private Long id;
     private String title;
@@ -9,11 +14,4 @@ public class ChatRoomInfo {
         this.title = title;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
 }

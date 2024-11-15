@@ -112,18 +112,22 @@ INSERT INTO user_hashtags (user_id, hash_tags) VALUES (20, 'DREAMLIKE');
 
 
 -- ChatRoom
-INSERT INTO chat_rooms (user1_id, user2_id, title) VALUES
-                                                       (1, 2, '김김'),
-                                                       (4, 3, '하이');
+INSERT INTO chat_rooms (user1_id, user2_id, title)
+VALUES
+    (1, 2, '김김'),
+    (4, 3, '하이'),
+    (5, 2, 'sample');
 
 -- ChatMessage
-INSERT INTO chat_messages (chat_room_id, user_id, content, image_url) VALUES
-                                                                          (1, 1, 'Hello, this is a test message!', NULL),
-                                                                          (1, 2, 'Hi, this is a reply!', NULL),
-                                                                          (1, 1, 'Hi, this is a reply!', NULL),
-                                                                          (1, 2, 'jam', NULL),
-                                                                          (2, 4, 'Hi, this is a reply!', NULL),
-                                                                          (2, 3, 'jam', NULL);
+INSERT INTO chat_messages (chat_room_id, user_id, content, message_type, timestamp)
+VALUES
+    (1, 1, 'Hello, this is a test message!', 'TEXT', NOW()),
+    (1, 2, 'Hi, this is a reply!', 'TEXT', NOW()),
+    (1, 1, 'Hi, this is another message!', 'TEXT', NOW()),
+    (1, 2, 'jam', 'TEXT', NOW()),
+    (2, 4, 'Hi, this is a reply!', 'TEXT', NOW()),
+    (2, 3, 'jam', 'TEXT', NOW()),
+    (3, 2, 'WoW','TEXT', '2024-11-13T00:00:00');
 
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (11, 'MYSTERY');
 INSERT INTO user_hashtags (user_id, hash_tags) VALUES (12, 'CONTEMPLATION');
