@@ -1,19 +1,19 @@
 package com.helpmeCookies.chat.controller;
 
-
-import com.helpmeCookies.chat.dto.ChatRoomInfo;
 import com.helpmeCookies.chat.entity.ChatMessage;
 import com.helpmeCookies.chat.entity.ChatRoom;
 import com.helpmeCookies.chat.service.ChatMessageService;
 import com.helpmeCookies.chat.service.ChatRoomService;
 import com.helpmeCookies.chat.util.ImageStorageUtil;
 import com.helpmeCookies.global.exception.chat.ChatRoomIdNotFoundException;
-import com.helpmeCookies.global.exception.user.UserNotFoundException;
-import com.helpmeCookies.user.entity.User;
 import com.helpmeCookies.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,6 +25,11 @@ public class ChatMessageController {
     private final UserService userService;
     private final ImageStorageUtil imageStorageUtil;
 
+    @GetMapping("/messages")
+    public List<ChatMessage> getAllMessages() {
+        return chatMessageService.getAllMessages();
+    }
+
     @GetMapping("/rooms/{chatRoomId}/messages")
     public List<ChatMessage> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
         ChatRoom chatRoom = chatRoomService.findById(chatRoomId)
@@ -33,20 +38,15 @@ public class ChatMessageController {
         return chatMessageService.getMessagesByChatRoom(chatRoom);
     }
 
-    @GetMapping("/rooms/user/{userId}")
-    public List<Long> getChatRoomIdsByUser(@PathVariable Long userId) throws UserNotFoundException {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+    @PostMapping("/image/convert")
+    public ResponseEntity<byte[]> convertImageUrlToBase64(@RequestParam String imagePath) throws IOException {
 
-        return chatMessageService.getChatRoomIdsByUser(user);
-    }
+        byte[] imageBytes = chatMessageService.convertImageUrlToBytes(imagePath);
 
-    @GetMapping("/rooms/user/title/{userId}")
-    public List<ChatRoomInfo> getChatRoomInfosByUserTitle(@PathVariable Long userId) throws UserNotFoundException {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "image/jpeg");
 
-        return chatMessageService.getChatRoomInfosByUser(user);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
     @DeleteMapping("/messages/{id}")
