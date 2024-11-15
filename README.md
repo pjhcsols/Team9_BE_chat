@@ -47,7 +47,7 @@
 - **Nginx** - 80 포트로 들어오는 요청을 백엔드 서버 1, 2에 대해 로드밸런싱
 - **MySQL** - 백엔드 서버 1, 2가 참조하는 DB
 - **Prometheus** - 백엔드 서버 1, 2의 메트릭 수집
-- **Grafana** - Prometheus가 수집한 메트릭 시각화 (URL: http://golden-ratio.duckdns.org:3000/)
+- **Grafana** - Prometheus가 수집한 메트릭 시각화 (URL: http://golden-ratio.duckdns.org:3000/) (admin/admin)
 - **Dozzle** - EC2-1, EC2-2의 도커 컨테이너 로그 시각화 (URL: http://golden-ratio.duckdns.org:7070/)
 
 #### EC2 - 2
