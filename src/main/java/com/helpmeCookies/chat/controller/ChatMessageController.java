@@ -1,19 +1,21 @@
 package com.helpmeCookies.chat.controller;
 
-
-import com.helpmeCookies.chat.dto.ChatRoomInfo;
 import com.helpmeCookies.chat.entity.ChatMessage;
 import com.helpmeCookies.chat.entity.ChatRoom;
 import com.helpmeCookies.chat.service.ChatMessageService;
 import com.helpmeCookies.chat.service.ChatRoomService;
 import com.helpmeCookies.chat.util.ImageStorageUtil;
+import com.helpmeCookies.global.ApiResponse.ApiResponse;
+import com.helpmeCookies.global.ApiResponse.SuccessCode;
 import com.helpmeCookies.global.exception.chat.ChatRoomIdNotFoundException;
-import com.helpmeCookies.global.exception.user.UserNotFoundException;
-import com.helpmeCookies.user.entity.User;
 import com.helpmeCookies.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,33 +27,35 @@ public class ChatMessageController {
     private final UserService userService;
     private final ImageStorageUtil imageStorageUtil;
 
+    @GetMapping("/messages")
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> getAllMessages() {
+        List<ChatMessage> messages = chatMessageService.getAllMessages();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, messages));
+    }
+
     @GetMapping("/rooms/{chatRoomId}/messages")
-    public List<ChatMessage> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
         ChatRoom chatRoom = chatRoomService.findById(chatRoomId)
                 .orElseThrow(() -> new ChatRoomIdNotFoundException(chatRoomId));
 
-        return chatMessageService.getMessagesByChatRoom(chatRoom);
+        List<ChatMessage> messages = chatMessageService.getMessagesByChatRoom(chatRoom);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, messages));
     }
 
-    @GetMapping("/rooms/user/{userId}")
-    public List<Long> getChatRoomIdsByUser(@PathVariable Long userId) throws UserNotFoundException {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+    @PostMapping("/image/convert")
+    public ResponseEntity<ApiResponse<byte[]>> convertImageUrlToBase64(@RequestParam String imagePath) throws IOException {
+        byte[] imageBytes = chatMessageService.convertImageUrlToBytes(imagePath);
 
-        return chatMessageService.getChatRoomIdsByUser(user);
-    }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "image/jpeg");
 
-    @GetMapping("/rooms/user/title/{userId}")
-    public List<ChatRoomInfo> getChatRoomInfosByUserTitle(@PathVariable Long userId) throws UserNotFoundException {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
-
-        return chatMessageService.getChatRoomInfosByUser(user);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, imageBytes));
     }
 
     @DeleteMapping("/messages/{id}")
-    public void deleteMessage(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteMessage(@PathVariable Long id) {
         chatMessageService.deleteMessage(id);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 }
 

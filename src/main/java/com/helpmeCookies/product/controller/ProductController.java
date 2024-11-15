@@ -9,6 +9,7 @@ import static com.helpmeCookies.product.util.SortUtil.convertProductSort;
 import com.helpmeCookies.product.controller.docs.ProductApiDocs;
 import com.helpmeCookies.product.dto.ProductImageResponse;
 import com.helpmeCookies.product.dto.ProductPage;
+import com.helpmeCookies.product.dto.ProductPage.Paging;
 import com.helpmeCookies.product.dto.ProductRequest;
 import com.helpmeCookies.product.dto.ProductResponse;
 import com.helpmeCookies.product.entity.Product;
@@ -40,55 +41,51 @@ public class ProductController implements ProductApiDocs {
     private final ReviewService reviewService;
     private final ProductLikeService productLikeService;
 
-    @PostMapping("/successTest")
-    public ResponseEntity<ApiResponse<Void>> saveTest() {
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> saveProduct(@RequestBody ProductRequest productRequest) {
+        Product product = productService.save(productRequest);
+        productImageService.saveImages(product.getId(),productRequest.imageUrls());
         return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> saveProduct(@RequestBody ProductRequest productRequest) {
-        Product product = productService.save(productRequest);
-        productImageService.saveImages(product.getId(),productRequest.imageUrls());
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/images")
-    public ResponseEntity<ProductImageResponse> uploadImages(List<MultipartFile> files) {
+    public ResponseEntity<ApiResponse<ProductImageResponse>> uploadImages(List<MultipartFile> files) {
         List<ImageUpload> responses = productImageService.uploadMultiFiles(files);
-        return ResponseEntity.ok(new ProductImageResponse(responses.stream().map(ImageUpload::photoUrl).toList()));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,new ProductImageResponse(responses.stream().map(ImageUpload::photoUrl).toList())));
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponse> getProductInfo(@PathVariable("productId") Long productId) {
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductInfo(@PathVariable("productId") Long productId) {
         Product product = productService.find(productId);
         List<String> urls = productImageService.getImages(productId);
-        return ResponseEntity.ok(ProductResponse.from(product,urls));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,ProductResponse.from(product,urls)));
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Void> editProductInfo(@PathVariable("productId") Long productId,
+    public ResponseEntity<ApiResponse<Void>> editProductInfo(@PathVariable("productId") Long productId,
                                                            @RequestBody ProductRequest productRequest) {
         productService.edit(productId, productRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 
     @PutMapping("/{productId}/images")
-    public ResponseEntity<Void> editImages(@PathVariable("productId") Long productId, List<MultipartFile> files) {
+    public ResponseEntity<ApiResponse<Void>> editImages(@PathVariable("productId") Long productId, List<MultipartFile> files) {
         productImageService.editImages(productId, files);
         List<String> images = productImageService.uploadMultiFiles(files).stream()
                 .map(ImageUpload::photoUrl).toList();
+        productService.editThumbnailImage(productId,images);
         productImageService.saveImages(productId,images);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("productId") Long productId) {
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable("productId") Long productId) {
         productService.delete(productId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.NO_CONTENT));
     }
 
     @GetMapping
-    public ResponseEntity<ProductPage.Paging> getProductsByPage(
+    public ResponseEntity<ApiResponse<ProductPage.Paging>> getProductsByPage(
         @RequestParam("query") String query,
         @RequestParam(name = "size", required = false, defaultValue = "20") int size,
         @RequestParam("page") int page,
@@ -97,15 +94,16 @@ public class ProductController implements ProductApiDocs {
         var sort = convertProductSort(productSort);
         var pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok(productService.getProductsByPage(query, pageable));
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK,productService.getProductsByPage(query, pageable)));
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<ProductPage.Paging> getProductsWithRandomPaging(
+    public ResponseEntity<ApiResponse<ProductPage.Paging>> getProductsWithRandomPaging(
         @RequestParam(name = "size", required = false, defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(0, size);
-        return ResponseEntity.ok(productService.getProductsWithRandomPaging(pageable));
+      
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, productService.getProductsWithRandomPaging(pageable)));
     }
 
     @GetMapping("/{productId}/reviews")

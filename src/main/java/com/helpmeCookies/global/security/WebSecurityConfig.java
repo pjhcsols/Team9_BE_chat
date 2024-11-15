@@ -53,6 +53,9 @@ public class WebSecurityConfig {
 				.successHandler((request, response, authentication) -> {
 					response.sendRedirect("/oauth2/login/kakao");
 				})
+				.failureHandler((request, response, exception) -> {
+					System.out.println(exception.getMessage());
+				})
 			);
 		return http.build();
 	}
@@ -62,7 +65,7 @@ public class WebSecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable);
 		http.sessionManagement((session) -> session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+		http.cors(AbstractHttpConfigurer::disable);
 		http.authorizeHttpRequests((authorize) ->
 			authorize
 				.requestMatchers(
@@ -74,7 +77,8 @@ public class WebSecurityConfig {
 					"/v1/products/**",
 					"/v1/reviews/**",
 					"/ws/**",
-					"/v1/artists/**"
+					"/v1/artists/**",
+						"v1/chat/**"
 				).permitAll()
 				.anyRequest().authenticated()
 		).exceptionHandling((exception) -> exception
