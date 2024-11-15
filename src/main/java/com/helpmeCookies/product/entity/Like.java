@@ -31,4 +31,8 @@ public class Like {
 		this.user = user;
 		this.product = product;
 	}
+
+	public Product getProduct() {
+		return product;
+	}
 }
