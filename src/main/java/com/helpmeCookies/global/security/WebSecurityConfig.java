@@ -74,7 +74,6 @@ public class WebSecurityConfig {
 		http.sessionManagement((session) -> session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		http.cors(withDefaults());
-
 		http.authorizeHttpRequests((authorize) ->
 			authorize
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -104,5 +103,4 @@ public class WebSecurityConfig {
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
 }
