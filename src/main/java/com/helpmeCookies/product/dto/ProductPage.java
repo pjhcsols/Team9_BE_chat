@@ -1,5 +1,6 @@
 package com.helpmeCookies.product.dto;
 
+import com.helpmeCookies.product.entity.Product;
 import com.helpmeCookies.product.repository.dto.ProductSearch;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,16 @@ public class ProductPage {
             );
         }
 
+        public static Info fromProduct(Product product) {
+            return new Info(
+                    product.getId(),
+                    product.getName(),
+                    product.getArtistInfo().getNickname(),
+                    product.getPrice(),
+                    product.getThumbnailUrl()
+            );
+        }
+
         public static List<Info> of(List<ProductSearch> content) {
             return content.stream()
                     .map(Info::from)
@@ -39,6 +50,13 @@ public class ProductPage {
             return new Paging(
                     productPage.hasNext(),
                     Info.of(productPage.getContent())
+            );
+        }
+
+        public static Paging fromProduct(Page<Product> productPage) {
+            return new Paging(
+                    productPage.hasNext(),
+                    productPage.map(Info::fromProduct).toList()
             );
         }
     }
