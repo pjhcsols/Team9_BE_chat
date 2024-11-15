@@ -5,6 +5,8 @@ import com.helpmeCookies.chat.entity.ChatRoom;
 import com.helpmeCookies.chat.service.ChatMessageService;
 import com.helpmeCookies.chat.service.ChatRoomService;
 import com.helpmeCookies.chat.util.ImageStorageUtil;
+import com.helpmeCookies.global.ApiResponse.ApiResponse;
+import com.helpmeCookies.global.ApiResponse.SuccessCode;
 import com.helpmeCookies.global.exception.chat.ChatRoomIdNotFoundException;
 import com.helpmeCookies.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,32 +28,34 @@ public class ChatMessageController {
     private final ImageStorageUtil imageStorageUtil;
 
     @GetMapping("/messages")
-    public List<ChatMessage> getAllMessages() {
-        return chatMessageService.getAllMessages();
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> getAllMessages() {
+        List<ChatMessage> messages = chatMessageService.getAllMessages();
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, messages));
     }
 
     @GetMapping("/rooms/{chatRoomId}/messages")
-    public List<ChatMessage> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> getMessagesByChatRoom(@PathVariable Long chatRoomId) {
         ChatRoom chatRoom = chatRoomService.findById(chatRoomId)
                 .orElseThrow(() -> new ChatRoomIdNotFoundException(chatRoomId));
 
-        return chatMessageService.getMessagesByChatRoom(chatRoom);
+        List<ChatMessage> messages = chatMessageService.getMessagesByChatRoom(chatRoom);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, messages));
     }
 
     @PostMapping("/image/convert")
-    public ResponseEntity<byte[]> convertImageUrlToBase64(@RequestParam String imagePath) throws IOException {
-
+    public ResponseEntity<ApiResponse<byte[]>> convertImageUrlToBase64(@RequestParam String imagePath) throws IOException {
         byte[] imageBytes = chatMessageService.convertImageUrlToBytes(imagePath);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "image/jpeg");
 
-        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, imageBytes));
     }
 
     @DeleteMapping("/messages/{id}")
-    public void deleteMessage(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteMessage(@PathVariable Long id) {
         chatMessageService.deleteMessage(id);
+        return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK));
     }
 }
 
