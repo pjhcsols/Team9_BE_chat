@@ -41,10 +41,12 @@ public class ChatRoomController {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + userEmail2));
 
         ChatRoom chatRoom = chatRoomService.createChatRoom(user1, user2);
-
+/*
         String welcomeMessageContent = "Welcome, " + user2.getEmail() + "!";
         ChatMessageDto chatMessageDto = new ChatMessageDto(user1.getEmail(), welcomeMessageContent, MessageType.ENTER);
         chatMessageService.saveMessage(chatRoom.getId(), chatMessageDto);
+
+ */
 
         return ResponseEntity.ok(ApiResponse.success(SuccessCode.OK, chatRoom));
     }

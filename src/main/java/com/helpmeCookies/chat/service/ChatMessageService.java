@@ -10,6 +10,7 @@ import com.helpmeCookies.chat.repository.ChatMessageRepository;
 import com.helpmeCookies.chat.repository.ChatRoomRepository;
 import com.helpmeCookies.chat.util.ImageStorageUtil;
 import com.helpmeCookies.global.exception.user.UserNotFoundException;
+import com.helpmeCookies.global.jwt.JwtUser;
 import com.helpmeCookies.user.entity.User;
 import com.helpmeCookies.user.repository.UserRepository;
 import com.helpmeCookies.user.service.UserService;
@@ -36,7 +37,7 @@ public class ChatMessageService {
     private final UserService userService;
 
     @Transactional
-    public ChatMessage saveMessage(Long chatRoomId, ChatMessageDto messageDto) {
+    public ChatMessage saveMessage(Long chatRoomId, ChatMessageDto messageDto, JwtUser jwtUser) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
 

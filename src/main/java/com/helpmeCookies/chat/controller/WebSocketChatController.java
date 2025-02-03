@@ -8,12 +8,15 @@ import com.helpmeCookies.chat.entity.MessageType;
 import com.helpmeCookies.chat.service.ChatMessageService;
 import com.helpmeCookies.chat.service.ChatRoomService;
 import com.helpmeCookies.global.exception.user.UserNotFoundException;
+import com.helpmeCookies.global.jwt.JwtUser;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,9 +44,12 @@ public class WebSocketChatController {
     }
 
     @MessageMapping("/chat/{chatRoomId}")
-    public void chat(@DestinationVariable Long chatRoomId, @RequestBody ChatMessageDto messageDto) {
-        ChatMessage savedMessage = chatMessageService.saveMessage(chatRoomId, messageDto);
+    public void chat(@DestinationVariable Long chatRoomId,
+                     @RequestBody ChatMessageDto messageDto,
+                     @AuthenticationPrincipal UserDetails userDetails) {
 
+        JwtUser jwtUser = (JwtUser) userDetails;
+        ChatMessage savedMessage = chatMessageService.saveMessage(chatRoomId, messageDto, jwtUser);
         messagingTemplate.convertAndSend("/v1/sub/chat/rooms/" + chatRoomId, savedMessage);
     }
 
